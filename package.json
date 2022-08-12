@@ -1,14 +1,28 @@
 {
   "name": "f1tele",
   "version": "1.0.0",
-  "description": "",
+  "description": "F1 Telemetry App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "watch": "npm run build -- -w",
+    "predev": "npm run build",
+    "dev": "nodemon --watch **/*.ts --exec ts-node ./index.ts",
+    "preprod": "npm run build",
+    "prod": "node . --unhandled-rejections=warn",
+    "start": "npm run prod"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Gegeh Prast",
+  "license": "MIT",
   "dependencies": {
-    "@racehub-io/f1-telemetry-client": "^0.2.8"
+    "@racehub-io/f1-telemetry-client": "^0.2.8",
+    "mongoose": "^6.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
   }
 }
