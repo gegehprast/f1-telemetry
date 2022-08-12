@@ -5,9 +5,9 @@ class App {
     public Telemetry: Telemetry
 
     constructor() {
-        this.Telemetry = new Telemetry
+        this.Telemetry = new Telemetry()
     }
-    
+
     public start = async () => {
         await dbConnect()
 
