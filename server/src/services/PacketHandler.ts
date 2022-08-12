@@ -228,22 +228,14 @@ export const carDamageHandler: Listener = async (data: PacketCarDamageData) => {
 }
 
 export const sessionHistoryHandler: Listener = async (data: PacketSessionHistoryData) => {
+    if (data.m_carIdx !== data.m_header.m_playerCarIndex) {
+        return
+    }
+    
     try {
-        const m_lapHistoryData = onlyPlayerCarIndex(
-            data.m_header.m_playerCarIndex,
-            data.m_lapHistoryData
-        )
-        const m_tyreStintsHistoryData = onlyPlayerCarIndex(
-            data.m_header.m_playerCarIndex,
-            data.m_tyreStintsHistoryData
-        )
         const doc = new SessionHistory({
             ...data,
-            ...{
-                m_lapHistoryData: m_lapHistoryData,
-                m_tyreStintsHistoryData: m_tyreStintsHistoryData,
-                m_header: m_headerParser(data.m_header),
-            },
+            ...{ m_header: m_headerParser(data.m_header) },
         })
         
         await doc.save()
