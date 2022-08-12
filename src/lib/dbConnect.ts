@@ -8,13 +8,15 @@ if (!MONGODB_URI) {
     )
 }
 
+type Cached = { conn: null | Mongoose; promise: null | Promise<Mongoose> }
+
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-// @ts-ignore: Unreachable code error
-let cached = global.mongoose
+    // @ts-ignore: Unreachable code error
+let cached: Cached = global.mongoose
 
 if (!cached) {
     // @ts-ignore: Unreachable code error
