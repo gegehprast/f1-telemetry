@@ -1,4 +1,4 @@
-import dbConnect from "./lib/dbConnect"
+import { dbConnect, dbDisconnect } from "./lib/dbConnect"
 import Telemetry from "./services/Telemetry"
 
 class App {
@@ -15,6 +15,8 @@ class App {
     }
 
     public stop = async () => {
+        await dbDisconnect()
+
         this.Telemetry.stop()
     }
 }
