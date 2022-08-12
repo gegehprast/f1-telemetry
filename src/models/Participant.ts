@@ -14,7 +14,7 @@ export const ParticipantSchema: Schema = new Schema({
     m_numCars: {
         type: Number,
     },
-    m_carParticipantData: {
+    m_participants: {
         type: Array<ParticipantData>,
     },
 })
