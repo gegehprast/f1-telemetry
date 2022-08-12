@@ -2,7 +2,7 @@ import express from 'express'
 import http from 'http'
 import path from 'path'
 import setHeaders from './middlewares/set-headers'
-import routes from './Router'
+import routes from './router'
 
 const init = async () => {
     const app = express()
