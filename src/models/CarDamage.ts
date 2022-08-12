@@ -9,11 +9,9 @@ export interface ICarDamageDoc extends Document {
 export const CarDamageSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_carDamageData: {
         type: Array<CarDamageData>,
-        required: true,
     },
 })
 

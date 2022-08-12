@@ -9,11 +9,9 @@ export interface IMotionDoc extends Document {
 export const MotionSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_carMotionData: {
         type: Array<MotionData>,
-        required: true,
     },
 })
 

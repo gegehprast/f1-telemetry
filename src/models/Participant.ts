@@ -10,15 +10,12 @@ export interface IParticipantDoc extends Document {
 export const ParticipantSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_numCars: {
         type: Number,
-        required: true,
     },
     m_carParticipantData: {
         type: Array<ParticipantData>,
-        required: true,
     },
 })
 

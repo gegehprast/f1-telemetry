@@ -9,11 +9,9 @@ export interface ILapDataDoc extends Document {
 export const LapDataSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_lapData: {
         type: Array<LapData>,
-        required: true,
     },
 })
 

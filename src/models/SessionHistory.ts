@@ -21,43 +21,33 @@ export interface ISessionHistoryDoc extends Document {
 export const SessionHistorySchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_carIdx: {
         type: Number,
-        required: true,
     },
     m_numLaps: {
         type: Number,
-        required: true,
     },
     m_numTyreStints: {
         type: Number,
-        required: true,
     },
     m_bestLapTimeLapNum: {
         type: Number,
-        required: true,
     },
     m_bestSector1LapNum: {
         type: Number,
-        required: true,
     },
     m_bestSector2LapNum: {
         type: Number,
-        required: true,
     },
     m_bestSector3LapNum: {
         type: Number,
-        required: true,
     },
     m_lapHistoryData: {
         type: Array<LapHistoryData>,
-        required: true,
     },
     m_tyreStintsHistoryData: {
         type: Array<TyreStintsHistoryData>,
-        required: true,
     },
 })
 

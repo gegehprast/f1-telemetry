@@ -34,95 +34,72 @@ export interface ISessionDoc extends Document {
 export const SessionSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_weather: {
         type: Number,
-        required: true,
     },
     m_trackTemperature: {
         type: Number,
-        required: true,
     },
     m_airTemperature: {
         type: Number,
-        required: true,
     },
     m_totalLaps: {
         type: Number,
-        required: true,
     },
     m_trackLength: {
         type: Number,
-        required: true,
     },
     m_sessionType: {
         type: Number,
-        required: true,
     },
     m_trackId: {
         type: Number,
-        required: true,
     },
     m_era: {
         type: Number,
-        required: true,
     },
     m_formula: {
         type: Number,
-        required: true,
     },
     m_sessionTimeLeft: {
         type: Number,
-        required: true,
     },
     m_sessionDuration: {
         type: Number,
-        required: true,
     },
     m_pitSpeedLimit: {
         type: Number,
-        required: true,
     },
     m_gamePaused: {
         type: Number,
-        required: true,
     },
     m_isSpectating: {
         type: Number,
-        required: true,
     },
     m_spectatorCarIndex: {
         type: Number,
-        required: true,
     },
     m_sliProNativeSupport: {
         type: Number,
-        required: true,
     },
     m_numMarshalZones: {
         type: Number,
-        required: true,
     },
     m_marshalZones: {
         type: Array<MarshalZone>,
-        required: true,
     },
     m_safetyCarStatus: {
         type: Number,
-        required: true,
     },
     m_networkGame: {
         type: Number,
-        required: true,
     },
     m_numWeatherForecastSamples: {
         type: Number,
-        required: true,
     },
     m_weatherForecastSamples: {
         type: Array<WeatherForecastSample>,
-        required: true,
     },
 })
 

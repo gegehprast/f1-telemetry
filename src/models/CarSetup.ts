@@ -9,11 +9,9 @@ export interface ICarSetupDoc extends Document {
 export const CarSetupSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_carSetups: {
         type: Array<CarSetupData>,
-        required: true,
     },
 })
 

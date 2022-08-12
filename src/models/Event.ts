@@ -10,15 +10,12 @@ export interface IEventDoc extends Document {
 export const EventSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_eventStringCode: {
         type: String,
-        required: true,
     },
     m_eventDetails: {
         type: Object,
-        required: true,
     },
 })
 

@@ -10,15 +10,12 @@ export interface ILobbyInfoDoc extends Document {
 export const LobbyInfoSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_numPlayers: {
         type: Number,
-        required: true,
     },
     m_lobbyPlayers: {
         type: Array<LobbyInfoData>,
-        required: true,
     },
 })
 

@@ -13,27 +13,21 @@ export interface ICarTelemetryDoc extends Document {
 export const CarTelemetrySchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_buttonStatus: {
         type: Number,
-        required: true,
     },
     m_carTelemetryData: {
         type: Array<CarTelemetryData>,
-        required: true,
     },
     m_mfdPanelIndex: {
         type: Number,
-        required: true,
     },
     m_mfdPanelIndexSecondaryPlayer: {
         type: Number,
-        required: true,
     },
     m_suggestedGear: {
         type: Number,
-        required: true,
     },
 })
 

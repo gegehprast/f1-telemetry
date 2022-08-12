@@ -9,11 +9,9 @@ export interface ICarStatusDoc extends Document {
 export const CarStatusSchema: Schema = new Schema({
     m_header: {
         type: Object,
-        required: true,
     },
     m_carStatusData: {
         type: Array<CarStatusData>,
-        required: true,
     },
 })
 
