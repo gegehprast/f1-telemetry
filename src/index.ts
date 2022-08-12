@@ -20,6 +20,5 @@ process.on('unhandledRejection', (reason, promise) => {
     ;(process as NodeJS.EventEmitter).on(eventType, () => App.stop())
 })
 
-
 // start app
 App.start()
