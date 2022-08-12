@@ -5,6 +5,7 @@ export interface IEventDoc extends Document {
     m_header: PacketHeader
     m_eventStringCode: string
     m_eventDetails: any
+    createdAt: Date
 }
 
 export const EventSchema: Schema = new Schema({
@@ -16,6 +17,10 @@ export const EventSchema: Schema = new Schema({
     },
     m_eventDetails: {
         type: Object,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date(),
     },
 })
 

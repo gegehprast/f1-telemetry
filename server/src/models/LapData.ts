@@ -2,8 +2,9 @@ import { LapData, PacketHeader } from '@racehub-io/f1-telemetry-client/build/src
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ILapDataDoc extends Document {
-    m_header: PacketHeader;
-    m_lapData: LapData[];
+    m_header: PacketHeader
+    m_lapData: LapData[]
+    createdAt: Date
 }
 
 export const LapDataSchema: Schema = new Schema({
@@ -12,6 +13,10 @@ export const LapDataSchema: Schema = new Schema({
     },
     m_lapData: {
         type: Array<LapData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

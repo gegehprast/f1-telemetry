@@ -2,8 +2,9 @@ import { MotionData, PacketHeader } from '@racehub-io/f1-telemetry-client/build/
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IMotionDoc extends Document {
-    m_header: PacketHeader;
-    m_carMotionData: MotionData[];
+    m_header: PacketHeader
+    m_carMotionData: MotionData[]
+    createdAt: Date
 }
 
 export const MotionSchema: Schema = new Schema({
@@ -12,6 +13,10 @@ export const MotionSchema: Schema = new Schema({
     },
     m_carMotionData: {
         type: Array<MotionData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

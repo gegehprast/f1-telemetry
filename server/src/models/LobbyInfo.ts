@@ -2,9 +2,10 @@ import { LobbyInfoData, PacketHeader } from '@racehub-io/f1-telemetry-client/bui
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ILobbyInfoDoc extends Document {
-    m_header: PacketHeader;
-    m_numPlayers: number;
-    m_lobbyPlayers: LobbyInfoData[];
+    m_header: PacketHeader
+    m_numPlayers: number
+    m_lobbyPlayers: LobbyInfoData[]
+    createdAt: Date
 }
 
 export const LobbyInfoSchema: Schema = new Schema({
@@ -16,6 +17,10 @@ export const LobbyInfoSchema: Schema = new Schema({
     },
     m_lobbyPlayers: {
         type: Array<LobbyInfoData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

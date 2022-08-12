@@ -4,6 +4,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface ICarStatusDoc extends Document {
     m_header: PacketHeader
     m_carStatusData: CarStatusData[]
+    createdAt: Date
 }
 
 export const CarStatusSchema: Schema = new Schema({
@@ -12,6 +13,10 @@ export const CarStatusSchema: Schema = new Schema({
     },
     m_carStatusData: {
         type: Array<CarStatusData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

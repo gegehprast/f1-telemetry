@@ -2,12 +2,13 @@ import { CarTelemetryData, PacketHeader } from '@racehub-io/f1-telemetry-client/
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ICarTelemetryDoc extends Document {
-    m_header: PacketHeader;
-    m_buttonStatus: number;
-    m_carTelemetryData: CarTelemetryData[];
-    m_mfdPanelIndex: number;
-    m_mfdPanelIndexSecondaryPlayer: number;
-    m_suggestedGear: number;
+    m_header: PacketHeader
+    m_buttonStatus: number
+    m_carTelemetryData: CarTelemetryData[]
+    m_mfdPanelIndex: number
+    m_mfdPanelIndexSecondaryPlayer: number
+    m_suggestedGear: number
+    createdAt: Date
 }
 
 export const CarTelemetrySchema: Schema = new Schema({
@@ -28,6 +29,10 @@ export const CarTelemetrySchema: Schema = new Schema({
     },
     m_suggestedGear: {
         type: Number,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

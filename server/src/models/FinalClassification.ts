@@ -2,9 +2,10 @@ import { FinalClassificationData, PacketHeader } from '@racehub-io/f1-telemetry-
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IFinalClassificationDoc extends Document {
-    m_header: PacketHeader;
-    m_numCars: number;
-    m_classificationData: FinalClassificationData[];
+    m_header: PacketHeader
+    m_numCars: number
+    m_classificationData: FinalClassificationData[]
+    createdAt: Date
 }
 
 export const FinalClassificationSchema: Schema = new Schema({
@@ -16,6 +17,10 @@ export const FinalClassificationSchema: Schema = new Schema({
     },
     m_classificationData: {
         type: Array<FinalClassificationData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

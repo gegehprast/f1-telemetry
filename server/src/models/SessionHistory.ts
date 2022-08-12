@@ -6,16 +6,17 @@ import {
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ISessionHistoryDoc extends Document {
-    m_header: PacketHeader;
-    m_carIdx: number;
-    m_numLaps: number;
-    m_numTyreStints: number;
-    m_bestLapTimeLapNum: number;
-    m_bestSector1LapNum: number;
-    m_bestSector2LapNum: number;
-    m_bestSector3LapNum: number;
-    m_lapHistoryData: LapHistoryData[];
-    m_tyreStintsHistoryData: TyreStintsHistoryData[];
+    m_header: PacketHeader
+    m_carIdx: number
+    m_numLaps: number
+    m_numTyreStints: number
+    m_bestLapTimeLapNum: number
+    m_bestSector1LapNum: number
+    m_bestSector2LapNum: number
+    m_bestSector3LapNum: number
+    m_lapHistoryData: LapHistoryData[]
+    m_tyreStintsHistoryData: TyreStintsHistoryData[]
+    createdAt: Date
 }
 
 export const SessionHistorySchema: Schema = new Schema({
@@ -48,6 +49,10 @@ export const SessionHistorySchema: Schema = new Schema({
     },
     m_tyreStintsHistoryData: {
         type: Array<TyreStintsHistoryData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

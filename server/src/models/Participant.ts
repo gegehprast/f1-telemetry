@@ -2,9 +2,10 @@ import { PacketHeader, ParticipantData } from '@racehub-io/f1-telemetry-client/b
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IParticipantDoc extends Document {
-    m_header: PacketHeader;
-    m_numCars: number;
-    m_participants: ParticipantData[];
+    m_header: PacketHeader
+    m_numCars: number
+    m_participants: ParticipantData[]
+    createdAt: Date
 }
 
 export const ParticipantSchema: Schema = new Schema({
@@ -16,6 +17,10 @@ export const ParticipantSchema: Schema = new Schema({
     },
     m_participants: {
         type: Array<ParticipantData>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 

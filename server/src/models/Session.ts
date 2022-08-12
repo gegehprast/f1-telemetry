@@ -29,6 +29,7 @@ export interface ISessionDoc extends Document {
     m_networkGame: number
     m_numWeatherForecastSamples: number
     m_weatherForecastSamples: WeatherForecastSample[]
+    createdAt: Date
 }
 
 export const SessionSchema: Schema = new Schema({
@@ -100,6 +101,10 @@ export const SessionSchema: Schema = new Schema({
     },
     m_weatherForecastSamples: {
         type: Array<WeatherForecastSample>,
+    },
+    createdAt: {
+        type: Date,
+        default: new Date()
     },
 })
 
