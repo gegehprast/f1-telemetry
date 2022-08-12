@@ -47,6 +47,16 @@ const m_headerParser = (m_header: PacketHeader): ModifiedPacketHeader => {
     }
 }
 
+const onlyPlayerCarIndex: <T>(m_playerCarIndex: number, data: T[]) => (T | null)[] = (m_playerCarIndex, data) => {
+    return data.map((item, idx) => {
+        if (idx === m_playerCarIndex) {
+            return item
+        }
+
+        return null
+    })
+}
+
 export const eventHandler: Listener = async (data: PacketEventData) => {
     try {
         if (['CHQF', 'BUTN'].includes(data.m_eventStringCode)) {
@@ -77,10 +87,18 @@ export const motionHandler: Listener = async (data: PacketMotionData) => {
 
 export const carSetupsHandler: Listener = async (data: PacketCarSetupData) => {
     try {
+        const m_carSetups = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_carSetups
+        )
         const doc = new CarSetup({
             ...data,
-            ...{ m_header: m_headerParser(data.m_header) },
+            ...{
+                m_carSetups: m_carSetups,
+                m_header: m_headerParser(data.m_header),
+            },
         })
+
         await doc.save()
     } catch (error) {
         console.log(error)
@@ -89,10 +107,15 @@ export const carSetupsHandler: Listener = async (data: PacketCarSetupData) => {
 
 export const lapDataHandler: Listener = async (data: PacketLapData) => {
     try {
+        const m_lapData = onlyPlayerCarIndex(data.m_header.m_playerCarIndex, data.m_lapData)
         const doc = new LapData({
             ...data,
-            ...{ m_header: m_headerParser(data.m_header) },
+            ...{
+                m_lapData: m_lapData,
+                m_header: m_headerParser(data.m_header),
+            },
         })
+
         await doc.save()
     } catch (error) {
         console.log(error)
@@ -125,10 +148,15 @@ export const participantsHandler: Listener = async (data: PacketParticipantsData
 
 export const carTelemetryHandler: Listener = async (data: PacketCarTelemetryData) => {
     try {
+        const m_carTelemetryData = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_carTelemetryData
+        )
         const doc = new CarTelemetry({
             ...data,
-            ...{ m_header: m_headerParser(data.m_header) },
+            ...{ m_carTelemetryData: m_carTelemetryData, m_header: m_headerParser(data.m_header) },
         })
+
         await doc.save()
     } catch (error) {
         console.log(error)
@@ -136,15 +164,23 @@ export const carTelemetryHandler: Listener = async (data: PacketCarTelemetryData
 }
 
 export const carStatusHandler: Listener = async (data: PacketCarStatusData) => {
-    // try {
-    //     const doc = new CarStatus({
-    //         ...data,
-    //         ...{ m_header: m_headerParser(data.m_header) },
-    //     })
-    //     await doc.save()
-    // } catch (error) {
-    //     console.log(error)
-    // }
+    try {
+        const m_carStatusData = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_carStatusData
+        )
+        const doc = new CarStatus({
+            ...data,
+            ...{
+                m_carStatusData: m_carStatusData,
+                m_header: m_headerParser(data.m_header),
+            },
+        })
+
+        await doc.save()
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const finalClassificationHandler: Listener = async (data: PacketFinalClassificationData) => {
@@ -173,10 +209,18 @@ export const lobbyInfoHandler: Listener = async (data: PacketLobbyInfoData) => {
 
 export const carDamageHandler: Listener = async (data: PacketCarDamageData) => {
     try {
+        const m_carDamageData = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_carDamageData
+        )
         const doc = new CarDamage({
             ...data,
-            ...{ m_header: m_headerParser(data.m_header) },
+            ...{
+                m_carDamageData: m_carDamageData,
+                m_header: m_headerParser(data.m_header),
+            },
         })
+
         await doc.save()
     } catch (error) {
         console.log(error)
@@ -185,10 +229,23 @@ export const carDamageHandler: Listener = async (data: PacketCarDamageData) => {
 
 export const sessionHistoryHandler: Listener = async (data: PacketSessionHistoryData) => {
     try {
+        const m_lapHistoryData = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_lapHistoryData
+        )
+        const m_tyreStintsHistoryData = onlyPlayerCarIndex(
+            data.m_header.m_playerCarIndex,
+            data.m_tyreStintsHistoryData
+        )
         const doc = new SessionHistory({
             ...data,
-            ...{ m_header: m_headerParser(data.m_header) },
+            ...{
+                m_lapHistoryData: m_lapHistoryData,
+                m_tyreStintsHistoryData: m_tyreStintsHistoryData,
+                m_header: m_headerParser(data.m_header),
+            },
         })
+        
         await doc.save()
     } catch (error) {
         console.log(error)
