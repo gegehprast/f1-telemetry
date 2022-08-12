@@ -2,13 +2,13 @@
   "name": "f1tele",
   "version": "1.0.0",
   "description": "F1 Telemetry App",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "watch": "npm run build -- -w",
     "predev": "npm run build",
-    "dev": "nodemon --watch **/*.ts --exec ts-node ./index.ts",
+    "dev": "nodemon --watch **/*.ts --exec ts-node ./src/index.ts",
     "preprod": "npm run build",
     "prod": "node . --unhandled-rejections=warn",
     "start": "npm run prod"
