@@ -20,7 +20,7 @@ class Telemetry {
     public client: F1TelemetryClient
 
     constructor() {
-        this.client = new F1TelemetryClient({ port: 20777, bigintEnabled: false })
+        this.client = new F1TelemetryClient({ port: 20777 })
     }
 
     public start() {
