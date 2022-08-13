@@ -62,6 +62,7 @@ const sessionHistoryPipelines: PipelineStage[] = [
             originalId: { $first: '$_id' }, // Hold onto original ID.
             _id: '$m_sessionUID', // Set the unique identifier
             m_sessionUID: { $first: '$m_sessionUID' },
+            m_playerCarIndex: { $first: '$m_playerCarIndex' },
 
             m_carIdx: { $first: '$m_carIdx' },
             m_bestLapTimeLapNum: { $first: '$m_bestLapTimeLapNum' },
@@ -76,13 +77,22 @@ const sessionHistoryPipelines: PipelineStage[] = [
         $project: {
             _id: '$originalId', // Restore original ID.
             m_sessionUID: '$m_sessionUID',
+            m_playerCarIndex: '$m_playerCarIndex',
 
             m_carIdx: '$m_carIdx',
             m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
             m_bestSector1LapNum: '$m_bestSector1LapNum',
             m_bestSector2LapNum: '$m_bestSector2LapNum',
             m_bestSector3LapNum: '$m_bestSector3LapNum',
-            m_lapHistoryData: '$m_lapHistoryData',
+            m_lapHistoryData: {
+                $filter: {
+                    input: '$m_lapHistoryData',
+                    cond: {
+                        $ne: ['$$m_lapHistoryData.m_lapValidBitFlags', 0],
+                    },
+                    as: 'm_lapHistoryData',
+                },
+            },
             createdAt: '$createdAt',
         },
     },
