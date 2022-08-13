@@ -12,6 +12,11 @@ export interface ILapDataDoc extends Document {
     m_surfaceType: number[];
 
     // LapData
+    m_lastLapTimeInMS: number; // correct one
+    m_currentLapTimeInMS: number; // correct one
+    m_sector1TimeInMS: number; // correct one
+    m_sector2TimeInMS: number; // correct one
+
     m_lastLapTime: number;
     m_currentLapTime: number;
     m_bestLapTime: number;
@@ -63,6 +68,19 @@ export const LapDataSchema: Schema = new Schema({
     },
 
     // LapData
+    m_lastLapTimeInMS: {
+        type: Number
+    },
+    m_currentLapTimeInMS: {
+        type: Number
+    },
+    m_sector1TimeInMS: {
+        type: Number
+    },
+    m_sector2TimeInMS: {
+        type: Number
+    },
+
     m_lastLapTime: {
         type: Number
     },

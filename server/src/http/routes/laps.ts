@@ -19,6 +19,11 @@ const lapDataPipelines: PipelineStage[] = [
             m_playerCarIndex: { $first: '$m_playerCarIndex' },
 
             // LapData
+            m_lastLapTimeInMS: { $first: '$m_lastLapTimeInMS' },
+            m_currentLapTimeInMS: { $first: '$m_currentLapTimeInMS' },
+            m_sector1TimeInMS: { $first: '$m_sector1TimeInMS' },
+            m_sector2TimeInMS: { $first: '$m_sector2TimeInMS' },
+
             m_lastLapTime: { $first: '$m_lastLapTime' },
             m_currentLapTime: { $first: '$m_currentLapTime' },
             m_bestLapTime: { $first: '$m_bestLapTime' },
@@ -52,6 +57,11 @@ const lapDataPipelines: PipelineStage[] = [
             m_playerCarIndex: '$m_playerCarIndex',
 
             // LapData
+            m_lastLapTimeInMS: '$m_lastLapTimeInMS',
+            m_currentLapTimeInMS: '$m_currentLapTimeInMS',
+            m_sector1TimeInMS: '$m_sector1TimeInMS',
+            m_sector2TimeInMS: '$m_sector2TimeInMS',
+
             m_lastLapTime: '$m_lastLapTime',
             m_currentLapTime: '$m_currentLapTime',
             m_bestLapTime: '$m_bestLapTime',
@@ -111,6 +121,7 @@ const handler = (router: express.Router) => {
                     lap.m_sector1TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector1TimeInMS
                     lap.m_sector2TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector2TimeInMS
                     lap.m_sector3TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector3TimeInMS
+                    lap.m_lapValidBitFlags = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapValidBitFlags
                     lap.stint = sessionHistory.m_tyreStintsHistoryData.find(stint => {
                         return stint.m_endLap > lap.m_currentLapNum 
                     })
