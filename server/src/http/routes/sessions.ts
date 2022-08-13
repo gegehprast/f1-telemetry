@@ -143,47 +143,54 @@ const handler = (router: express.Router) => {
         try {
             const perPage = 50
             const page = 1
-            const sessions: ISessionDoc[] = await Session.aggregate([
-                ...sessionPipelines,
-            ])
+            const sessions: ISessionDoc[] = await Session.aggregate(
+                [...sessionPipelines],
+                { allowDiskUse: true }
+            )
                 .sort({ createdAt: -1 })
                 .skip((page - 1) * perPage)
                 .limit(perPage)
                 .exec()
             const sessionUIDs = sessions.map((session) => session.m_header.m_sessionUID)
             const sessionHistories: ISessionHistoryDoc[] =
-                await SessionHistory.aggregate([
-                    ...sessionHistoryPipelines,
+                await SessionHistory.aggregate(
+                    [
+                        ...sessionHistoryPipelines,
+                        ...[
+                            {
+                                $match: {
+                                    'm_header.m_sessionUID': {
+                                        $in: sessionUIDs,
+                                    },
+                                    $expr: {
+                                        $eq: [
+                                            '$m_carIdx',
+                                            '$m_header.m_playerCarIndex',
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    ],
+                    { allowDiskUse: true }
+                )
+                    .sort({ createdAt: -1 })
+                    .exec()
+            const participants: IParticipantDoc[] = await Participant.aggregate(
+                [
+                    ...participantPipelines,
                     ...[
                         {
                             $match: {
                                 'm_header.m_sessionUID': {
                                     $in: sessionUIDs,
                                 },
-                                $expr: {
-                                    $eq: [
-                                        '$m_carIdx',
-                                        '$m_header.m_playerCarIndex',
-                                    ],
-                                },
                             },
                         },
                     ],
-                ])
-                    .sort({ createdAt: -1 })
-                    .exec()
-            const participants: IParticipantDoc[] = await Participant.aggregate([
-                ...participantPipelines,
-                ...[
-                    {
-                        $match: {
-                            'm_header.m_sessionUID': {
-                                $in: sessionUIDs,
-                            },
-                        },
-                    },
                 ],
-            ])
+                { allowDiskUse: true }
+            )
                 .sort({ createdAt: -1 })
                 .exec()
 
@@ -213,6 +220,7 @@ const handler = (router: express.Router) => {
 
             res.json(records)
         } catch (error) {
+            console.error(error)
             return exceptionHandler(error, res)
         }
     })
