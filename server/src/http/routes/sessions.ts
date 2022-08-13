@@ -88,7 +88,20 @@ const sessionHistoryPipelines: PipelineStage[] = [
                 $filter: {
                     input: '$m_lapHistoryData',
                     cond: {
-                        $ne: ['$$m_lapHistoryData.m_lapValidBitFlags', 0],
+                        $and: [
+                            {
+                                $ne: ['$$m_lapHistoryData.m_lapTimeInMS', 0]
+                            },
+                            {
+                                $ne: ['$$m_lapHistoryData.m_sector1TimeInMS', 0]
+                            },
+                            {
+                                $ne: ['$$m_lapHistoryData.m_sector2TimeInMS', 0]
+                            },
+                            {
+                                $ne: ['$$m_lapHistoryData.m_sector3TimeInMS', 0]
+                            },
+                        ],
                     },
                     as: 'm_lapHistoryData',
                 },
