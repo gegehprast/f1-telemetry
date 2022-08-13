@@ -92,12 +92,12 @@ const handler = (router: express.Router) => {
             ).exec()
             const lapData = await LapData.aggregate(
                 [
-                    ...lapDataPipelines,
                     {
                         $match: {
                             m_sessionUID: req.params.sessionUID,
                         },
                     },
+                    ...lapDataPipelines,
                     {
                         $sort: { m_currentLapNum: 1 },
                     },

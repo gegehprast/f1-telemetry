@@ -155,22 +155,20 @@ const handler = (router: express.Router) => {
             const sessionHistories: ISessionHistoryDoc[] =
                 await SessionHistory.aggregate(
                     [
-                        ...sessionHistoryPipelines,
-                        ...[
-                            {
-                                $match: {
-                                    'm_sessionUID': {
-                                        $in: sessionUIDs,
-                                    },
-                                    $expr: {
-                                        $eq: [
-                                            '$m_carIdx',
-                                            '$m_playerCarIndex',
-                                        ],
-                                    },
+                        {
+                            $match: {
+                                'm_sessionUID': {
+                                    $in: sessionUIDs,
+                                },
+                                $expr: {
+                                    $eq: [
+                                        '$m_carIdx',
+                                        '$m_playerCarIndex',
+                                    ],
                                 },
                             },
-                        ],
+                        },
+                        ...sessionHistoryPipelines,
                     ],
                     { allowDiskUse: true }
                 )
