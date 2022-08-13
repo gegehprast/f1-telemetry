@@ -11,8 +11,6 @@ const routes = async () => {
         .readdirSync(ROUTE_DIR)
         .filter((file) => file.endsWith('.js') || file.endsWith('.ts'))
 
-    console.log(files)
-
     for (const file of files) {
         ;(await import(`${ROUTE_PATH}/${file}`)).default(ROUTER)
     }
