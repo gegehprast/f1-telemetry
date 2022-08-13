@@ -6,7 +6,7 @@ import { SESSION_TYPES } from '../constants/sessionTypes'
 import { TEAMS } from '../constants/teams'
 import { TRACKS } from '../constants/track'
 import { convertDuration } from '../helpers/time'
-import { Session } from '../Types'
+import { ISessionDoc } from '../Types'
 
 interface ParsedSession {
     sessionUID: string;
@@ -22,7 +22,7 @@ interface ParsedSession {
 }
 
 const getSessions = async () => {
-    return await fetch('http://localhost:3000/api/sessions').then(res => res.json()) as Session[]
+    return await fetch('http://localhost:3000/api/sessions').then(res => res.json()) as ISessionDoc[]
 }
 
 const Home: NextPage = () => {
@@ -31,22 +31,22 @@ const Home: NextPage = () => {
         async function _getSessions() {
             const sessions = await getSessions()
             const parsedSessions = sessions.map(session => {
-                const bestLapTimeData = session.sessionHistory.m_lapHistoryData[session.sessionHistory.m_bestLapTimeLapNum - 1]
-                const bestSector1TimeData = session.sessionHistory.m_lapHistoryData[session.sessionHistory.m_bestSector1LapNum - 1]
-                const bestSector2TimeData = session.sessionHistory.m_lapHistoryData[session.sessionHistory.m_bestSector2LapNum - 1]
-                const bestSector3TimeData = session.sessionHistory.m_lapHistoryData[session.sessionHistory.m_bestSector3LapNum - 1]
+                const bestLapTimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestLapTimeLapNum - 1]
+                const bestSector1TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector1LapNum - 1]
+                const bestSector2TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector2LapNum - 1]
+                const bestSector3TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector3LapNum - 1]
 
                 return {
-                    sessionUID: session.m_header.m_sessionUID,
+                    sessionUID: session.m_sessionUID,
                     track: TRACKS[session.m_trackId].name,
-                    team: TEAMS[session.participants.m_participants[session.m_header.m_playerCarIndex].m_teamId].name,
+                    team: TEAMS[session.participants.find(participant => participant.carIndex === participant.m_playerCarIndex)!.m_teamId].name,
                     type: SESSION_TYPES[session.m_sessionType].long,
                     totalLap: session.m_totalLaps,
                     bestLapTime: convertDuration(bestLapTimeData ? bestLapTimeData.m_lapTimeInMS : 0),
                     bestSector1Time: convertDuration(bestSector1TimeData ? bestSector1TimeData.m_sector1TimeInMS : 0),
                     bestSector2Time: convertDuration(bestSector2TimeData ? bestSector2TimeData.m_sector2TimeInMS : 0),
                     bestSector3Time: convertDuration(bestSector3TimeData ? bestSector3TimeData.m_sector3TimeInMS : 0),
-                    date: new Date((new Date(session.createdAt)).getTime() - session.m_header.m_sessionTime)
+                    date: new Date((new Date(session.createdAt)).getTime() - session.m_sessionTime)
                 }
             })
 
