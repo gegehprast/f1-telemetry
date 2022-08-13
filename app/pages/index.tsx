@@ -35,11 +35,12 @@ const Home: NextPage = () => {
                 const bestSector1TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector1LapNum - 1]
                 const bestSector2TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector2LapNum - 1]
                 const bestSector3TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector3LapNum - 1]
+                const player = session.participants.find(participant => participant.carIndex === participant.m_playerCarIndex)
 
                 return {
                     sessionUID: session.m_sessionUID,
                     track: TRACKS[session.m_trackId].name,
-                    team: TEAMS[session.participants.find(participant => participant.carIndex === participant.m_playerCarIndex)!.m_teamId].name,
+                    team: player ? TEAMS[player.m_teamId].name : 'N/A',
                     type: SESSION_TYPES[session.m_sessionType].long,
                     totalLap: session.m_totalLaps,
                     bestLapTime: convertDuration(bestLapTimeData ? bestLapTimeData.m_lapTimeInMS : 0),
