@@ -35,8 +35,8 @@ export interface ISessionDoc extends Document {
     createdAt: Date
 
     // extras
-    sessionHistory: ISessionHistoryDoc
-    participants: IParticipantDoc
+    sessionHistory?: ISessionHistoryDoc
+    participants?: IParticipantDoc
 }
 
 export const SessionSchema: Schema = new Schema(
