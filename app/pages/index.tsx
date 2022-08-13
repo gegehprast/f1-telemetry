@@ -6,7 +6,7 @@ import { SESSION_TYPES } from '../constants/sessionTypes'
 import { TEAMS } from '../constants/teams'
 import { TRACKS } from '../constants/track'
 import { convertDuration } from '../helpers/time'
-import { ISessionDoc } from '../Types'
+import { ISessionDoc, LapHistoryData } from '../Types'
 
 interface ParsedSession {
     sessionUID: string;
@@ -25,16 +25,32 @@ const getSessions = async () => {
     return await fetch('http://localhost:3000/api/sessions').then(res => res.json()) as ISessionDoc[]
 }
 
+const getBestTime = (m_lapHistoryData: LapHistoryData[], key: keyof LapHistoryData) => {
+    const sorted = m_lapHistoryData.sort((a, b) => {
+        if (a[key] < b[key]) {
+            return -1;
+        }
+
+        if (a[key] > b[key]) {
+            return 1;
+        }
+        
+        return 0;
+    })
+
+    return sorted[0]
+}
+
 const Home: NextPage = () => {
     const [sessions, setSessions] = useState<ParsedSession[]>([])
     useEffect(() => {
         async function _getSessions() {
             const sessions = await getSessions()
             const parsedSessions = sessions.map(session => {
-                const bestLapTimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestLapTimeLapNum - 1]
-                const bestSector1TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector1LapNum - 1]
-                const bestSector2TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector2LapNum - 1]
-                const bestSector3TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector3LapNum - 1]
+                const bestLapTimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_lapTimeInMS')
+                const bestSector1TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector1TimeInMS')
+                const bestSector2TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector2TimeInMS')
+                const bestSector3TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector3TimeInMS')
                 const player = session.participants.find(participant => participant.carIndex === session.m_playerCarIndex)
 
                 return {
