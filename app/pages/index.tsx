@@ -35,7 +35,7 @@ const Home: NextPage = () => {
                 const bestSector1TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector1LapNum - 1]
                 const bestSector2TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector2LapNum - 1]
                 const bestSector3TimeData = session.sessionHistory?.m_lapHistoryData[session.sessionHistory.m_bestSector3LapNum - 1]
-                const player = session.participants.find(participant => participant.carIndex === participant.m_playerCarIndex)
+                const player = session.participants.find(participant => participant.carIndex === session.m_playerCarIndex)
 
                 return {
                     sessionUID: session.m_sessionUID,
