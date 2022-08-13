@@ -121,20 +121,29 @@ export const carSetupsHandler: Listener = async (data: PacketCarSetupData) => {
 
 export const lapDataHandler: Listener = async (data: PacketLapData) => {
     try {
+        const header = m_headerParser(data.m_header)
         const m_lapData = onlyPlayerCarData(
             data.m_header.m_playerCarIndex,
             data.m_lapData
         )
-        const doc = new LapData({
-            ...m_headerParser(data.m_header),
-            ...m_lapData,
-            ...{
-                carIndex: data.m_header.m_playerCarIndex,
-                createdAt: new Date(),
-            },
-        })
 
-        await doc.save()
+        if (m_lapData) {
+            await LapData.updateOne(
+                { m_currentLapNum: m_lapData.m_currentLapNum },
+                {
+                    ...header,
+                    ...m_lapData,
+                    ...{
+                        carIndex: data.m_header.m_playerCarIndex,
+                        createdAt: new Date(),
+                    },
+                },
+                {
+                    upsert: true,
+                    setDefaultsOnInsert: true,
+                }
+            ).exec()
+        }
     } catch (error) {
         console.log(error)
     }
@@ -267,35 +276,43 @@ export const carDamageHandler: Listener = async (data: PacketCarDamageData) => {
 
 export const sessionHandler: Listener = async (data: PacketSessionData) => {
     try {
-        const doc = new Session({
-            ...m_headerParser(data.m_header),
-            ...{
-                m_weather: data.m_weather,
-                m_trackTemperature: data.m_trackTemperature,
-                m_airTemperature: data.m_airTemperature,
-                m_totalLaps: data.m_totalLaps,
-                m_trackLength: data.m_trackLength,
-                m_sessionType: data.m_sessionType,
-                m_trackId: data.m_trackId,
-                m_era: data.m_era,
-                m_formula: data.m_formula,
-                m_sessionTimeLeft: data.m_sessionTimeLeft,
-                m_sessionDuration: data.m_sessionDuration,
-                m_pitSpeedLimit: data.m_pitSpeedLimit,
-                m_gamePaused: data.m_gamePaused,
-                m_isSpectating: data.m_isSpectating,
-                m_spectatorCarIndex: data.m_spectatorCarIndex,
-                m_sliProNativeSupport: data.m_sliProNativeSupport,
-                m_numMarshalZones: data.m_numMarshalZones,
-                m_marshalZones: data.m_marshalZones,
-                m_safetyCarStatus: data.m_safetyCarStatus,
-                m_networkGame: data.m_networkGame,
-                m_numWeatherForecastSamples: data.m_numWeatherForecastSamples,
-                m_weatherForecastSamples: data.m_weatherForecastSamples,
-                createdAt: new Date(),
+        const header = m_headerParser(data.m_header)
+        await Session.updateOne(
+            { m_sessionUID: header.m_sessionUID },
+            {
+                ...header,
+                ...{
+                    m_weather: data.m_weather,
+                    m_trackTemperature: data.m_trackTemperature,
+                    m_airTemperature: data.m_airTemperature,
+                    m_totalLaps: data.m_totalLaps,
+                    m_trackLength: data.m_trackLength,
+                    m_sessionType: data.m_sessionType,
+                    m_trackId: data.m_trackId,
+                    m_era: data.m_era,
+                    m_formula: data.m_formula,
+                    m_sessionTimeLeft: data.m_sessionTimeLeft,
+                    m_sessionDuration: data.m_sessionDuration,
+                    m_pitSpeedLimit: data.m_pitSpeedLimit,
+                    m_gamePaused: data.m_gamePaused,
+                    m_isSpectating: data.m_isSpectating,
+                    m_spectatorCarIndex: data.m_spectatorCarIndex,
+                    m_sliProNativeSupport: data.m_sliProNativeSupport,
+                    m_numMarshalZones: data.m_numMarshalZones,
+                    m_marshalZones: data.m_marshalZones,
+                    m_safetyCarStatus: data.m_safetyCarStatus,
+                    m_networkGame: data.m_networkGame,
+                    m_numWeatherForecastSamples:
+                        data.m_numWeatherForecastSamples,
+                    m_weatherForecastSamples: data.m_weatherForecastSamples,
+                    createdAt: new Date(),
+                },
             },
-        })
-        await doc.save()
+            {
+                upsert: true,
+                setDefaultsOnInsert: true,
+            }
+        ).exec()
     } catch (error) {
         console.log(error)
     }
@@ -309,23 +326,29 @@ export const sessionHistoryHandler: Listener = async (
     }
 
     try {
-        const doc = new SessionHistory({
-            ...m_headerParser(data.m_header),
-            ...{
-                m_carIdx: data.m_carIdx,
-                m_numLaps: data.m_numLaps,
-                m_numTyreStints: data.m_numTyreStints,
-                m_bestLapTimeLapNum: data.m_bestLapTimeLapNum,
-                m_bestSector1LapNum: data.m_bestSector1LapNum,
-                m_bestSector2LapNum: data.m_bestSector2LapNum,
-                m_bestSector3LapNum: data.m_bestSector3LapNum,
-                m_lapHistoryData: data.m_lapHistoryData,
-                m_tyreStintsHistoryData: data.m_tyreStintsHistoryData,
-                createdAt: new Date(),
+        const header = m_headerParser(data.m_header)
+        await SessionHistory.updateOne(
+            { m_sessionUID: header.m_sessionUID },
+            {
+                ...header,
+                ...{
+                    m_carIdx: data.m_carIdx,
+                    m_numLaps: data.m_numLaps,
+                    m_numTyreStints: data.m_numTyreStints,
+                    m_bestLapTimeLapNum: data.m_bestLapTimeLapNum,
+                    m_bestSector1LapNum: data.m_bestSector1LapNum,
+                    m_bestSector2LapNum: data.m_bestSector2LapNum,
+                    m_bestSector3LapNum: data.m_bestSector3LapNum,
+                    m_lapHistoryData: data.m_lapHistoryData,
+                    m_tyreStintsHistoryData: data.m_tyreStintsHistoryData,
+                    createdAt: new Date(),
+                },
             },
-        })
-
-        await doc.save()
+            {
+                upsert: true,
+                setDefaultsOnInsert: true,
+            }
+        ).exec()
     } catch (error) {
         console.log(error)
     }
