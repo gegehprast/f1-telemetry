@@ -127,6 +127,8 @@ export const LapDataSchema: Schema = new Schema({
 
 LapDataSchema.index({ createdAt: -1 }, { unique: false })
 
+LapDataSchema.index({ m_currentLapNum: 1 }, { unique: false })
+
 const LapData = mongoose.model<ILapDataDoc>('lapdata', LapDataSchema)
 
 export default LapData
