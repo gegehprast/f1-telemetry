@@ -47,7 +47,7 @@ export interface ISessionDoc extends Document {
 
     // extras
     sessionHistory?: ISessionHistoryDoc
-    participants?: IParticipantDoc
+    participants?: IParticipantDoc[]
 }
 
 export const SessionSchema: Schema = new Schema(
