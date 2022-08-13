@@ -81,35 +81,35 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className='w-1/2 h-screen font-mono border'>
+            <main className='w-1/2 h-screen mx-auto font-mono'>
                 <h1 className='text-4xl text-center '>SESSIONS</h1>
 
                 <table className='w-full mt-10'>
                     <thead>
                         <tr>
-                            <th className='border'>Track</th>
-                            <th className='border'>Car</th>
-                            <th className='border'>Type</th>
-                            <th className='border'>Laps</th>
-                            <th className='border'>Best Lap</th>
-                            <th className='border' colSpan={3}>Best Sectors</th>
-                            <th className='border'>Date</th>
+                            <th className='p-2 border'>Track</th>
+                            <th className='p-2 border'>Car</th>
+                            <th className='p-2 border'>Type</th>
+                            <th className='p-2 border'>Laps</th>
+                            <th className='p-2 border'>Best Lap</th>
+                            <th className='p-2 border' colSpan={3}>Best Sectors</th>
+                            <th className='p-2 border'>Date</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {sessions.map(session => (
                             <Link key={session.sessionUID} href={`/laps/${session.sessionUID}`}>
-                                <tr className='cursor-pointer hover:bg-gray-100'>
-                                    <td className='border'>{session.track}</td>
-                                    <td className='border'>{session.team}</td>
-                                    <td className='border'>{session.type}</td>
-                                    <td className='text-center border'>{session.totalLap}</td>
-                                    <td className='text-center border'>{session.bestLapTime}</td>
-                                    <td className='text-center border'>{session.bestSector1Time}</td>
-                                    <td className='text-center border'>{session.bestSector2Time}</td>
-                                    <td className='text-center border'>{session.bestSector3Time}</td>
-                                    <td className='text-center border' width={'22%'}>{session.date.toLocaleString('en-CA')}</td>
+                                <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100'>
+                                    <td className='p-2 border'>{session.track}</td>
+                                    <td className='p-2 border'>{session.team}</td>
+                                    <td className='p-2 border'>{session.type}</td>
+                                    <td className='p-2 text-center border'>{session.totalLap}</td>
+                                    <td className='p-2 text-center border'>{session.bestLapTime}</td>
+                                    <td className='p-2 text-center border'>{session.bestSector1Time}</td>
+                                    <td className='p-2 text-center border'>{session.bestSector2Time}</td>
+                                    <td className='p-2 text-center border'>{session.bestSector3Time}</td>
+                                    <td className='p-2 text-center border' width={'22%'}>{session.date.toLocaleString('en-CA')}</td>
                                 </tr>
                             </Link>
                         ))}
