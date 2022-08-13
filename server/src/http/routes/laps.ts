@@ -1,65 +1,8 @@
 import express from 'express'
 import { PipelineStage } from 'mongoose'
 import LapData from '../../models/LapData'
-import Session from '../../models/Session'
-import SessionHistory, { ISessionHistoryDoc } from '../../models/SessionHistory'
+import SessionHistory from '../../models/SessionHistory'
 import { exceptionHandler } from '../exceptions/handler'
-import HttpException from '../exceptions/HttpException'
-
-const sessionHistoryPipelines: PipelineStage[] = [
-    {
-        $sort: { createdAt: -1 },
-    },
-    {
-        $group: {
-            originalId: { $first: '$_id' }, // Hold onto original ID.
-            _id: '$m_sessionUID', // Set the unique identifier
-            m_packetFormat: { $first: '$m_packetFormat' },
-            m_packetVersion: { $first: '$m_packetVersion' },
-            m_packetId: { $first: '$m_packetId' },
-            m_sessionUID: { $first: '$m_sessionUID' },
-            m_sessionTime: { $first: '$m_sessionTime' },
-            m_frameIdentifier: { $first: '$m_frameIdentifier' },
-            m_playerCarIndex: { $first: '$m_playerCarIndex' },
-            m_surfaceType: { $first: '$m_surfaceType' },
-
-            m_carIdx: { $first: '$m_carIdx' },
-            m_numLaps: { $first: '$m_numLaps' },
-            m_numTyreStints: { $first: '$m_numTyreStints' },
-            m_bestLapTimeLapNum: { $first: '$m_bestLapTimeLapNum' },
-            m_bestSector1LapNum: { $first: '$m_bestSector1LapNum' },
-            m_bestSector2LapNum: { $first: '$m_bestSector2LapNum' },
-            m_bestSector3LapNum: { $first: '$m_bestSector3LapNum' },
-            m_lapHistoryData: { $first: '$m_lapHistoryData' },
-            m_tyreStintsHistoryData: { $first: '$m_tyreStintsHistoryData' },
-            createdAt: { $first: '$createdAt' },
-        },
-    },
-    {
-        $project: {
-            _id: '$originalId', // Restore original ID.
-            m_packetFormat: '$m_packetFormat',
-            m_packetVersion: '$m_packetVersion',
-            m_packetId: '$m_packetId',
-            m_sessionUID: '$m_sessionUID',
-            m_sessionTime: '$m_sessionTime',
-            m_frameIdentifier: '$m_frameIdentifier',
-            m_playerCarIndex: '$m_playerCarIndex',
-            m_surfaceType: '$m_surfaceType',
-
-            m_carIdx: '$m_carIdx',
-            m_numLaps: '$m_numLaps',
-            m_numTyreStints: '$m_numTyreStints',
-            m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
-            m_bestSector1LapNum: '$m_bestSector1LapNum',
-            m_bestSector2LapNum: '$m_bestSector2LapNum',
-            m_bestSector3LapNum: '$m_bestSector3LapNum',
-            m_lapHistoryData: '$m_lapHistoryData',
-            m_tyreStintsHistoryData: '$m_tyreStintsHistoryData',
-            createdAt: '$createdAt',
-        },
-    },
-]
 
 const lapDataPipelines: PipelineStage[] = [
     {
@@ -71,14 +14,9 @@ const lapDataPipelines: PipelineStage[] = [
             _id: '$m_currentLapNum', // Set the unique identifier
 
             // PacketHeader
-            m_packetFormat: { $first: '$m_packetFormat' },
-            m_packetVersion: { $first: '$m_packetVersion' },
-            m_packetId: { $first: '$m_packetId' },
             m_sessionUID: { $first: '$m_sessionUID' },
             m_sessionTime: { $first: '$m_sessionTime' },
-            m_frameIdentifier: { $first: '$m_frameIdentifier' },
             m_playerCarIndex: { $first: '$m_playerCarIndex' },
-            m_surfaceType: { $first: '$m_surfaceType' },
 
             // LapData
             m_lastLapTime: { $first: '$m_lastLapTime' },
@@ -109,14 +47,9 @@ const lapDataPipelines: PipelineStage[] = [
             _id: '$originalId', // Restore original ID.
 
             // PacketHeader
-            m_packetFormat: '$m_packetFormat',
-            m_packetVersion: '$m_packetVersion',
-            m_packetId: '$m_packetId',
             m_sessionUID: '$m_sessionUID',
             m_sessionTime: '$m_sessionTime',
-            m_frameIdentifier: '$m_frameIdentifier',
             m_playerCarIndex: '$m_playerCarIndex',
-            m_surfaceType: '$m_surfaceType',
 
             // LapData
             m_lastLapTime: '$m_lastLapTime',
@@ -147,22 +80,16 @@ const lapDataPipelines: PipelineStage[] = [
 const handler = (router: express.Router) => {
     router.get('/laps/:sessionUID', async (req, res) => {
         try {
-            const session = await Session.findOne(
-                { m_sessionUID: req.params.sessionUID },
-                null,
-                { sort: { createdAt: -1 } }
-            ).exec()
             const sessionHistory = await SessionHistory.findOne(
-                { 
-                    m_sessionUID: req.params.sessionUID, 
+                {
+                    m_sessionUID: req.params.sessionUID,
                     $expr: {
                         $eq: ['$m_carIdx', '$m_playerCarIndex'],
-                    } 
+                    },
                 },
                 null,
                 { sort: { createdAt: -1 } }
             ).exec()
-
             const lapData = await LapData.aggregate(
                 [
                     ...lapDataPipelines,

@@ -62,8 +62,6 @@ const sessionHistoryPipelines: PipelineStage[] = [
             originalId: { $first: '$_id' }, // Hold onto original ID.
             _id: '$m_sessionUID', // Set the unique identifier
             m_sessionUID: { $first: '$m_sessionUID' },
-            m_sessionTime: { $first: '$m_sessionTime' },
-            m_playerCarIndex: { $first: '$m_playerCarIndex' },
 
             m_carIdx: { $first: '$m_carIdx' },
             m_bestLapTimeLapNum: { $first: '$m_bestLapTimeLapNum' },
@@ -78,8 +76,6 @@ const sessionHistoryPipelines: PipelineStage[] = [
         $project: {
             _id: '$originalId', // Restore original ID.
             m_sessionUID: '$m_sessionUID',
-            m_sessionTime: '$m_sessionTime',
-            m_playerCarIndex: '$m_playerCarIndex',
 
             m_carIdx: '$m_carIdx',
             m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
@@ -100,8 +96,6 @@ const participantPipelines: PipelineStage[] = [
             _id: '$carIndex', // Set the unique identifier
             originalId: { $first: '$_id' },
             m_sessionUID: { $first: '$m_sessionUID' },
-            m_sessionTime: { $first: '$m_sessionTime' },
-            m_playerCarIndex: { $first: '$m_playerCarIndex' },
 
             m_aiControlled: { $first: '$m_aiControlled' },
             m_driverId: { $first: '$m_driverId' },
@@ -119,8 +113,6 @@ const participantPipelines: PipelineStage[] = [
         $project: {
             _id: '$originalId',
             m_sessionUID: '$m_sessionUID',
-            m_sessionTime: '$m_sessionTime',
-            m_playerCarIndex: '$m_playerCarIndex',
 
             m_aiControlled: '$m_aiControlled',
             m_driverId: '$m_driverId',
