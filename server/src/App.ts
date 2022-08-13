@@ -14,11 +14,11 @@ class App {
     }
 
     public start = async () => {
+        await dbConnect()
+
         const { server, app } = await initHTTP()
         this.httpServer = server
         this.expressApp = app
-
-        await dbConnect()
 
         this.Telemetry.start()
     }
