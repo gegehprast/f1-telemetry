@@ -56,6 +56,8 @@ export const SessionHistorySchema: Schema = new Schema({
     },
 })
 
+SessionHistorySchema.index({ createdAt: -1 }, { unique: false })
+
 const SessionHistory = mongoose.model<ISessionHistoryDoc>('sessionhistory', SessionHistorySchema)
 
 export default SessionHistory

@@ -124,6 +124,8 @@ export const SessionSchema: Schema = new Schema(
     }
 )
 
+SessionSchema.index({ createdAt: -1 }, { unique: false })
+
 const Session = model<ISessionDoc, WithPagination<ISessionDoc>>('session', SessionSchema)
 
 export default Session
