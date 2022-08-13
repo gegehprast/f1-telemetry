@@ -1,6 +1,5 @@
 import {
     MarshalZone,
-    PacketHeader,
     WeatherForecastSample,
 } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import { Schema, Document, model } from 'mongoose'
@@ -9,7 +8,17 @@ import { ISessionHistoryDoc } from './SessionHistory'
 import { WithPagination } from './Types'
 
 export interface ISessionDoc extends Document {
-    m_header: PacketHeader
+    // PacketHeader
+    m_packetFormat: number;
+    m_packetVersion: number;
+    m_packetId: number;
+    m_sessionUID: string;
+    m_sessionTime: number;
+    m_frameIdentifier: number;
+    m_playerCarIndex: number;
+    m_surfaceType: number[];
+
+    // PacketSessionData
     m_weather: number
     m_trackTemperature: number
     m_airTemperature: number
@@ -32,6 +41,8 @@ export interface ISessionDoc extends Document {
     m_networkGame: number
     m_numWeatherForecastSamples: number
     m_weatherForecastSamples: WeatherForecastSample[]
+
+    // basic
     createdAt: Date
 
     // extras
@@ -41,9 +52,33 @@ export interface ISessionDoc extends Document {
 
 export const SessionSchema: Schema = new Schema(
     {
-        m_header: {
-            type: Object,
+        // PacketHeader
+        m_packetFormat: {
+            type: Number
         },
+        m_packetVersion: {
+            type: Number
+        },
+        m_packetId: {
+            type: Number
+        },
+        m_sessionUID: {
+            type: String
+        },
+        m_sessionTime: {
+            type: Number
+        },
+        m_frameIdentifier: {
+            type: Number
+        },
+        m_playerCarIndex: {
+            type: Number
+        },
+        m_surfaceType: {
+            type: Array<Number>
+        },
+
+        // PacketSessionData
         m_weather: {
             type: Number,
         },
@@ -110,6 +145,8 @@ export const SessionSchema: Schema = new Schema(
         m_weatherForecastSamples: {
             type: Array<WeatherForecastSample>,
         },
+
+        // basic
         createdAt: {
             type: Date,
             default: new Date()

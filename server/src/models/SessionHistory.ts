@@ -1,12 +1,21 @@
 import {
     LapHistoryData,
-    PacketHeader,
     TyreStintsHistoryData,
 } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ISessionHistoryDoc extends Document {
-    m_header: PacketHeader
+    // PacketHeader
+    m_packetFormat: number;
+    m_packetVersion: number;
+    m_packetId: number;
+    m_sessionUID: string;
+    m_sessionTime: number;
+    m_frameIdentifier: number;
+    m_playerCarIndex: number;
+    m_surfaceType: number[];
+
+    // PacketSessionHistoryData
     m_carIdx: number
     m_numLaps: number
     m_numTyreStints: number
@@ -16,13 +25,39 @@ export interface ISessionHistoryDoc extends Document {
     m_bestSector3LapNum: number
     m_lapHistoryData: LapHistoryData[]
     m_tyreStintsHistoryData: TyreStintsHistoryData[]
+
+    // basic
     createdAt: Date
 }
 
 export const SessionHistorySchema: Schema = new Schema({
-    m_header: {
-        type: Object,
+    // PacketHeader
+    m_packetFormat: {
+        type: Number
     },
+    m_packetVersion: {
+        type: Number
+    },
+    m_packetId: {
+        type: Number
+    },
+    m_sessionUID: {
+        type: String
+    },
+    m_sessionTime: {
+        type: Number
+    },
+    m_frameIdentifier: {
+        type: Number
+    },
+    m_playerCarIndex: {
+        type: Number
+    },
+    m_surfaceType: {
+        type: Array<Number>
+    },
+
+    // PacketSessionHistoryData
     m_carIdx: {
         type: Number,
     },
@@ -50,6 +85,8 @@ export const SessionHistorySchema: Schema = new Schema({
     m_tyreStintsHistoryData: {
         type: Array<TyreStintsHistoryData>,
     },
+
+    // basic
     createdAt: {
         type: Date,
         default: new Date()

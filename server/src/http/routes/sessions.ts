@@ -12,8 +12,16 @@ const sessionPipelines: PipelineStage[] = [
     {
         $group: {
             originalId: { $first: '$_id' }, // Hold onto original ID.
-            _id: '$m_header.m_sessionUID', // Set the unique identifier
-            m_header: { $first: '$m_header' },
+            _id: '$m_sessionUID', // Set the unique identifier
+            m_packetFormat: { $first: '$m_packetFormat' },
+            m_packetVersion: { $first: '$m_packetVersion' },
+            m_packetId: { $first: '$m_packetId' },
+            m_sessionUID: { $first: '$m_sessionUID' },
+            m_sessionTime: { $first: '$m_sessionTime' },
+            m_frameIdentifier: { $first: '$m_frameIdentifier' },
+            m_playerCarIndex: { $first: '$m_playerCarIndex' },
+            m_surfaceType: { $first: '$m_surfaceType' },
+
             m_weather: { $first: '$m_weather' },
             m_trackTemperature: { $first: '$m_trackTemperature' },
             m_airTemperature: { $first: '$m_airTemperature' },
@@ -48,7 +56,15 @@ const sessionPipelines: PipelineStage[] = [
     {
         $project: {
             _id: '$originalId', // Restore original ID.
-            m_header: '$m_header',
+            m_packetFormat: '$m_packetFormat',
+            m_packetVersion: '$m_packetVersion',
+            m_packetId: '$m_packetId',
+            m_sessionUID: '$m_sessionUID',
+            m_sessionTime: '$m_sessionTime',
+            m_frameIdentifier: '$m_frameIdentifier',
+            m_playerCarIndex: '$m_playerCarIndex',
+            m_surfaceType: '$m_surfaceType',
+
             m_weather: '$m_weather',
             m_trackTemperature: '$m_trackTemperature',
             m_airTemperature: '$m_airTemperature',
@@ -82,8 +98,16 @@ const sessionHistoryPipelines: PipelineStage[] = [
     {
         $group: {
             originalId: { $first: '$_id' }, // Hold onto original ID.
-            _id: '$m_header.m_sessionUID', // Set the unique identifier
-            m_header: { $first: '$m_header' },
+            _id: '$m_sessionUID', // Set the unique identifier
+            m_packetFormat: { $first: '$m_packetFormat' },
+            m_packetVersion: { $first: '$m_packetVersion' },
+            m_packetId: { $first: '$m_packetId' },
+            m_sessionUID: { $first: '$m_sessionUID' },
+            m_sessionTime: { $first: '$m_sessionTime' },
+            m_frameIdentifier: { $first: '$m_frameIdentifier' },
+            m_playerCarIndex: { $first: '$m_playerCarIndex' },
+            m_surfaceType: { $first: '$m_surfaceType' },
+
             m_carIdx: { $first: '$m_carIdx' },
             m_numLaps: { $first: '$m_numLaps' },
             m_numTyreStints: { $first: '$m_numTyreStints' },
@@ -99,7 +123,15 @@ const sessionHistoryPipelines: PipelineStage[] = [
     {
         $project: {
             _id: '$originalId', // Restore original ID.
-            m_header: '$m_header',
+            m_packetFormat: '$m_packetFormat',
+            m_packetVersion: '$m_packetVersion',
+            m_packetId: '$m_packetId',
+            m_sessionUID: '$m_sessionUID',
+            m_sessionTime: '$m_sessionTime',
+            m_frameIdentifier: '$m_frameIdentifier',
+            m_playerCarIndex: '$m_playerCarIndex',
+            m_surfaceType: '$m_surfaceType',
+
             m_carIdx: '$m_carIdx',
             m_numLaps: '$m_numLaps',
             m_numTyreStints: '$m_numTyreStints',
@@ -120,8 +152,16 @@ const participantPipelines: PipelineStage[] = [
     {
         $group: {
             originalId: { $first: '$_id' }, // Hold onto original ID.
-            _id: '$m_header.m_sessionUID', // Set the unique identifier
-            m_header: { $first: '$m_header' },
+            _id: '$m_sessionUID', // Set the unique identifier
+            m_packetFormat: { $first: '$m_packetFormat' },
+            m_packetVersion: { $first: '$m_packetVersion' },
+            m_packetId: { $first: '$m_packetId' },
+            m_sessionUID: { $first: '$m_sessionUID' },
+            m_sessionTime: { $first: '$m_sessionTime' },
+            m_frameIdentifier: { $first: '$m_frameIdentifier' },
+            m_playerCarIndex: { $first: '$m_playerCarIndex' },
+            m_surfaceType: { $first: '$m_surfaceType' },
+            
             m_numCars: { $first: '$m_numCars' },
             m_participants: { $first: '$m_participants' },
             createdAt: { $first: '$createdAt' },
@@ -130,7 +170,15 @@ const participantPipelines: PipelineStage[] = [
     {
         $project: {
             _id: '$originalId', // Restore original ID.
-            m_header: '$m_header',
+            m_packetFormat: '$m_packetFormat',
+            m_packetVersion: '$m_packetVersion',
+            m_packetId: '$m_packetId',
+            m_sessionUID: '$m_sessionUID',
+            m_sessionTime: '$m_sessionTime',
+            m_frameIdentifier: '$m_frameIdentifier',
+            m_playerCarIndex: '$m_playerCarIndex',
+            m_surfaceType: '$m_surfaceType',
+
             m_numCars: '$m_numCars',
             m_participants: '$m_participants',
             createdAt: '$createdAt',
@@ -151,7 +199,7 @@ const handler = (router: express.Router) => {
                 .skip((page - 1) * perPage)
                 .limit(perPage)
                 .exec()
-            const sessionUIDs = sessions.map((session) => session.m_header.m_sessionUID)
+            const sessionUIDs = sessions.map((session) => session.m_sessionUID)
             const sessionHistories: ISessionHistoryDoc[] =
                 await SessionHistory.aggregate(
                     [
@@ -159,13 +207,13 @@ const handler = (router: express.Router) => {
                         ...[
                             {
                                 $match: {
-                                    'm_header.m_sessionUID': {
+                                    'm_sessionUID': {
                                         $in: sessionUIDs,
                                     },
                                     $expr: {
                                         $eq: [
                                             '$m_carIdx',
-                                            '$m_header.m_playerCarIndex',
+                                            '$m_playerCarIndex',
                                         ],
                                     },
                                 },
@@ -182,7 +230,7 @@ const handler = (router: express.Router) => {
                     ...[
                         {
                             $match: {
-                                'm_header.m_sessionUID': {
+                                'm_sessionUID': {
                                     $in: sessionUIDs,
                                 },
                             },
@@ -198,13 +246,13 @@ const handler = (router: express.Router) => {
             const records = sessions.map((session) => {
                 const sessionHistory = sessionHistories.find(
                     (sessionHistory) =>
-                        sessionHistory.m_header.m_sessionUID ===
-                        session.m_header.m_sessionUID
+                        sessionHistory.m_sessionUID ===
+                        session.m_sessionUID
                 )
                 const _participants = participants.find(
                     (participant) =>
-                        participant.m_header.m_sessionUID ===
-                        session.m_header.m_sessionUID
+                        participant.m_sessionUID ===
+                        session.m_sessionUID
                 )
 
                 if (sessionHistory) {
