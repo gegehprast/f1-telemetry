@@ -161,9 +161,15 @@ const participantPipelines: PipelineStage[] = [
             m_frameIdentifier: { $first: '$m_frameIdentifier' },
             m_playerCarIndex: { $first: '$m_playerCarIndex' },
             m_surfaceType: { $first: '$m_surfaceType' },
-            
+
+            m_aiControlled: { $first: '$m_aiControlled' },
+            m_driverId: { $first: '$m_driverId' },
+            m_name: { $first: '$m_name' },
+            m_nationality: { $first: '$m_nationality' },
+            m_raceNumber: { $first: '$m_raceNumber' },
+            m_teamId: { $first: '$m_teamId' },
+
             m_numCars: { $first: '$m_numCars' },
-            m_participants: { $first: '$m_participants' },
             createdAt: { $first: '$createdAt' },
         },
     },
@@ -179,8 +185,14 @@ const participantPipelines: PipelineStage[] = [
             m_playerCarIndex: '$m_playerCarIndex',
             m_surfaceType: '$m_surfaceType',
 
+            m_aiControlled: '$m_aiControlled',
+            m_driverId: '$m_driverId',
+            m_name: '$m_name',
+            m_nationality: '$m_nationality',
+            m_raceNumber: '$m_raceNumber',
+            m_teamId: '$m_teamId',
+
             m_numCars: '$m_numCars',
-            m_participants: '$m_participants',
             createdAt: '$createdAt',
         },
     },
@@ -226,16 +238,13 @@ const handler = (router: express.Router) => {
                     .exec()
             const participants: IParticipantDoc[] = await Participant.aggregate(
                 [
-                    ...participantPipelines,
-                    ...[
-                        {
-                            $match: {
-                                'm_sessionUID': {
-                                    $in: sessionUIDs,
-                                },
+                    {
+                        $match: {
+                            m_sessionUID: {
+                                $in: sessionUIDs,
                             },
                         },
-                    ],
+                    },
                 ],
                 { allowDiskUse: true }
             )
@@ -260,7 +269,7 @@ const handler = (router: express.Router) => {
                 }
 
                 if (_participants) {
-                    session.participants = _participants
+                    session.participants = participants
                 }
 
                 return session
