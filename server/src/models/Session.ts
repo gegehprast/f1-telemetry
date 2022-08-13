@@ -4,6 +4,7 @@ import {
     WeatherForecastSample,
 } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import { Schema, Document, model } from 'mongoose'
+import { IParticipantDoc } from './Participant'
 import { ISessionHistoryDoc } from './SessionHistory'
 import { WithPagination } from './Types'
 
@@ -35,6 +36,7 @@ export interface ISessionDoc extends Document {
 
     // extras
     sessionHistory: ISessionHistoryDoc
+    participants: IParticipantDoc
 }
 
 export const SessionSchema: Schema = new Schema(

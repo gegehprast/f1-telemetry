@@ -1,5 +1,6 @@
 import express from 'express'
 import { PipelineStage } from 'mongoose'
+import Participant, { IParticipantDoc } from '../../models/Participant'
 import Session, { ISessionDoc } from '../../models/Session'
 import SessionHistory, { ISessionHistoryDoc } from '../../models/SessionHistory'
 import { exceptionHandler } from '../exceptions/handler'
@@ -112,6 +113,30 @@ const sessionHistoryPipelines: PipelineStage[] = [
         },
     },
 ]
+const participantPipelines: PipelineStage[] = [
+    {
+        $sort: { createdAt: -1 },
+    },
+    {
+        $group: {
+            originalId: { $first: '$_id' }, // Hold onto original ID.
+            _id: '$m_header.m_sessionUID', // Set the unique identifier
+            m_header: { $first: '$m_header' },
+            m_numCars: { $first: '$m_numCars' },
+            m_participants: { $first: '$m_participants' },
+            createdAt: { $first: '$createdAt' },
+        },
+    },
+    {
+        $project: {
+            _id: '$originalId', // Restore original ID.
+            m_header: '$m_header',
+            m_numCars: '$m_numCars',
+            m_participants: '$m_participants',
+            createdAt: '$createdAt',
+        },
+    },
+]
 
 const handler = (router: express.Router) => {
     router.get('/sessions', async (req, res) => {
@@ -125,6 +150,7 @@ const handler = (router: express.Router) => {
                 .skip((page - 1) * perPage)
                 .limit(perPage)
                 .exec()
+            const sessionUIDs = sessions.map((session) => session.m_header.m_sessionUID)
             const sessionHistories: ISessionHistoryDoc[] =
                 await SessionHistory.aggregate([
                     ...sessionHistoryPipelines,
@@ -132,20 +158,34 @@ const handler = (router: express.Router) => {
                         {
                             $match: {
                                 'm_header.m_sessionUID': {
-                                    $in: sessions.map(
-                                        (session) =>
-                                            session.m_header.m_sessionUID
-                                    ),
+                                    $in: sessionUIDs,
                                 },
                                 $expr: {
-                                    $eq: ['$m_carIdx', '$m_header.m_playerCarIndex']
-                                }
+                                    $eq: [
+                                        '$m_carIdx',
+                                        '$m_header.m_playerCarIndex',
+                                    ],
+                                },
                             },
                         },
                     ],
                 ])
                     .sort({ createdAt: -1 })
                     .exec()
+            const participants: IParticipantDoc[] = await Participant.aggregate([
+                ...participantPipelines,
+                ...[
+                    {
+                        $match: {
+                            'm_header.m_sessionUID': {
+                                $in: sessionUIDs,
+                            },
+                        },
+                    },
+                ],
+            ])
+                .sort({ createdAt: -1 })
+                .exec()
 
             // map sessionHistory to sessions
             const records = sessions.map((session) => {
@@ -154,9 +194,18 @@ const handler = (router: express.Router) => {
                         sessionHistory.m_header.m_sessionUID ===
                         session.m_header.m_sessionUID
                 )
+                const _participants = participants.find(
+                    (participant) =>
+                        participant.m_header.m_sessionUID ===
+                        session.m_header.m_sessionUID
+                )
 
                 if (sessionHistory) {
                     session.sessionHistory = sessionHistory
+                }
+
+                if (_participants) {
+                    session.participants = _participants
                 }
 
                 return session
