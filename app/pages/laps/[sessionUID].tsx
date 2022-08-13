@@ -3,17 +3,17 @@ import Head from 'next/head'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
-import { convertDuration } from '../../helpers/time';
-import { SessionHistory } from '../../Types'
+import { convertDuration } from '../../helpers/time'
+import { ILapDataDoc } from '../../Types';
 
-const getSessionHistory = async (sessionUID: string) => {
-    return await fetch(`http://localhost:3000/api/laps/${sessionUID}`).then(res => res.json()) as SessionHistory
+const getLaps = async (sessionUID: string) => {
+    return await fetch(`http://localhost:3000/api/laps/${sessionUID}`).then(res => res.json()) as ILapDataDoc[]
 }
 
 const Lap: NextPage = () => {
     const router = useRouter()
     const { sessionUID } = router.query
-    const [sessionHistory, setSessionHistory] = useState<SessionHistory>()
+    const [laps, setLaps] = useState<ILapDataDoc[]>([])
 
     useEffect(() => {
         async function _getSessions() {
@@ -21,9 +21,9 @@ const Lap: NextPage = () => {
                 return
             }
 
-            const sessionHistory = await getSessionHistory(sessionUID as string)
+            const laps = await getLaps(sessionUID as string)
 
-            setSessionHistory(sessionHistory)
+            setLaps(laps)
         }
 
         _getSessions()
@@ -52,11 +52,11 @@ const Lap: NextPage = () => {
                     </thead>
 
                     <tbody>
-                        {sessionHistory?.m_lapHistoryData.map((lap, idx) => (
+                        {laps.map((lap, idx) => (
                             <tr key={idx} className='cursor-pointer hover:bg-gray-100'>
-                                <td className='text-center border'>{idx + 1}</td>
-                                <td className='text-center border'>{lap.m_lapTimeInMS}</td>
-                                <td className='text-center border'>{lap.m_lapTimeInMS}</td>
+                                <td className='text-center border'>{lap.m_currentLapNum}</td>
+                                <td className='text-center border'>{lap.m_carPosition}</td>
+                                <td className='text-center border'>{lap.stint.m_tyreActualCompound}</td>
                                 <td className='text-center border'>{convertDuration(lap.m_lapTimeInMS)}</td>
                                 <td className='text-center border'>{convertDuration(lap.m_sector1TimeInMS)}</td>
                                 <td className='text-center border'>{convertDuration(lap.m_sector2TimeInMS)}</td>
