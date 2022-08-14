@@ -101,16 +101,24 @@ const Lap: NextPage = () => {
                                     </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestLapIndex === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.add_m_currentLapTimeInMS)}
+                                    <span className={`${lap.m_currentLapInvalid === 1 ? 'line-through' : ''}`}>
+                                        {convertDuration(lap.add_m_currentLapTimeInMS)}
+                                    </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector1Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.add_m_sector1TimeInMS)}
+                                    <span className={`${lap.m_currentLapInvalid === 1 ? 'line-through' : ''}`}>
+                                        {convertDuration(lap.add_m_sector1TimeInMS)}
+                                    </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector2Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.add_m_sector2TimeInMS)}
+                                    <span className={`${lap.m_currentLapInvalid === 1 ? 'line-through' : ''}`}>
+                                        {convertDuration(lap.add_m_sector2TimeInMS)}
+                                    </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector3Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.add_m_sector3TimeInMS)}
+                                    <span className={`${lap.m_currentLapInvalid === 1 ? 'line-through' : ''}`}>
+                                        {convertDuration(lap.add_m_sector3TimeInMS)}
+                                    </span>
                                 </td>
                             </tr>
                         ))}
