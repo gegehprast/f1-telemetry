@@ -168,7 +168,7 @@ export const participantsHandler: Listener = async (
                     ...header,
                     ...participantData,
                     ...{
-                        carIndex: data.m_header.m_playerCarIndex,
+                        carIndex: i,
                         createdAt: new Date(),
                     },
                 },
