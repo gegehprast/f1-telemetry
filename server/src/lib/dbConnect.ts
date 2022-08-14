@@ -29,8 +29,9 @@ export async function dbConnect() {
     }
 
     if (!cached.promise) {
-        const opts = {
+        const opts: mongoose.ConnectOptions = {
             bufferCommands: false,
+            autoIndex: true
         }
 
         cached.promise = mongoose
