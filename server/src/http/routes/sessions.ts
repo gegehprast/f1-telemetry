@@ -10,6 +10,61 @@ const sessionPipelines: PipelineStage[] = [
         $sort: { createdAt: -1 },
     },
     {
+        $lookup: {
+            from: 'sessionhistories',
+            localField: 'm_sessionUID',
+            foreignField: 'm_sessionUID',
+            pipeline: [
+                {
+                    $sort: { createdAt: -1 },
+                },
+                {
+                    $group: {
+                        originalId: { $first: '$_id' }, // Hold onto original ID.
+                        _id: '$m_sessionUID', // Set the unique identifier
+                        m_sessionUID: { $first: '$m_sessionUID' },
+                        m_playerCarIndex: { $first: '$m_playerCarIndex' },
+
+                        m_carIdx: { $first: '$m_carIdx' },
+                        m_bestLapTimeLapNum: { $first: '$m_bestLapTimeLapNum' },
+                        m_bestSector1LapNum: { $first: '$m_bestSector1LapNum' },
+                        m_bestSector2LapNum: { $first: '$m_bestSector2LapNum' },
+                        m_bestSector3LapNum: { $first: '$m_bestSector3LapNum' },
+                        m_lapHistoryData: { $first: '$m_lapHistoryData' },
+                        createdAt: { $first: '$createdAt' },
+                    },
+                },
+                {
+                    $project: {
+                        _id: '$originalId', // Restore original ID.
+                        m_sessionUID: '$m_sessionUID',
+                        m_playerCarIndex: '$m_playerCarIndex',
+
+                        m_carIdx: '$m_carIdx',
+                        m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
+                        m_bestSector1LapNum: '$m_bestSector1LapNum',
+                        m_bestSector2LapNum: '$m_bestSector2LapNum',
+                        m_bestSector3LapNum: '$m_bestSector3LapNum',
+                        m_lapHistoryData: '$m_lapHistoryData',
+                        createdAt: '$createdAt',
+                    },
+                },
+            ],
+            as: 'sessionhistories',
+        },
+    },
+    {
+        $unwind: '$sessionhistories',
+    },
+    {
+        $match: {
+            'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
+        },
+    },
+    {
         $group: {
             originalId: { $first: '$_id' }, // Hold onto original ID.
             _id: '$m_sessionUID', // Set the unique identifier
@@ -29,6 +84,7 @@ const sessionPipelines: PipelineStage[] = [
             m_sessionTimeLeft: { $first: '$m_sessionTimeLeft' },
             m_sessionDuration: { $first: '$m_sessionDuration' },
             createdAt: { $first: '$createdAt' },
+            sessionhistories: { $first: '$sessionhistories' },
         },
     },
     {
@@ -50,6 +106,7 @@ const sessionPipelines: PipelineStage[] = [
             m_sessionTimeLeft: '$m_sessionTimeLeft',
             m_sessionDuration: '$m_sessionDuration',
             createdAt: '$createdAt',
+            sessionhistories: '$sessionhistories',
         },
     },
 ]
