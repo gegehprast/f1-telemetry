@@ -91,6 +91,14 @@ export const ParticipantSchema: Schema = new Schema({
 
 ParticipantSchema.index({ createdAt: -1 }, { unique: false })
 
+ParticipantSchema.on('index', function(err) {
+    if (err) {
+        console.error('ParticipantSchema index error: %s', err);
+    } else {
+        console.info('ParticipantSchema indexing complete');
+    }
+});
+
 const Participant = mongoose.model<IParticipantDoc>('participant', ParticipantSchema)
 
 export default Participant

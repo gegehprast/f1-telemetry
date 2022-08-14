@@ -135,6 +135,14 @@ export const CarSetupSchema: Schema = new Schema({
 
 CarSetupSchema.index({ createdAt: -1 }, { unique: false })
 
+CarSetupSchema.on('index', function(err) {
+    if (err) {
+        console.error('CarSetupSchema index error: %s', err);
+    } else {
+        console.info('CarSetupSchema indexing complete');
+    }
+});
+
 const CarSetup = mongoose.model<ICarSetupDoc>('carsetup', CarSetupSchema)
 
 export default CarSetup

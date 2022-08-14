@@ -130,6 +130,14 @@ export const CarTelemetrySchema: Schema = new Schema({
 
 CarTelemetrySchema.index({ createdAt: -1 }, { unique: false })
 
+CarTelemetrySchema.on('index', function(err) {
+    if (err) {
+        console.error('CarTelemetrySchema index error: %s', err);
+    } else {
+        console.info('CarTelemetrySchema indexing complete');
+    }
+});
+
 const CarTelemetry = mongoose.model<ICarTelemetryDoc>('cartelemetry', CarTelemetrySchema)
 
 export default CarTelemetry

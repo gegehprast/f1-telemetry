@@ -128,6 +128,14 @@ export const CarDamageSchema: Schema = new Schema({
 
 CarDamageSchema.index({ createdAt: -1 }, { unique: false })
 
+CarDamageSchema.on('index', function(err) {
+    if (err) {
+        console.error('CarDamageSchema index error: %s', err);
+    } else {
+        console.info('CarDamageSchema indexing complete');
+    }
+});
+
 const CarDamage = mongoose.model<ICarDamageDoc>('cardamage', CarDamageSchema)
 
 export default CarDamage

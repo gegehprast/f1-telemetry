@@ -115,6 +115,14 @@ export const FinalClassificationSchema: Schema = new Schema({
 
 FinalClassificationSchema.index({ createdAt: -1 }, { unique: false })
 
+FinalClassificationSchema.on('index', function(err) {
+    if (err) {
+        console.error('FinalClassificationSchema index error: %s', err);
+    } else {
+        console.info('FinalClassificationSchema indexing complete');
+    }
+});
+
 const FinalClassification = mongoose.model<IFinalClassificationDoc>('finalclassification', FinalClassificationSchema)
 
 export default FinalClassification

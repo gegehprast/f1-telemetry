@@ -93,7 +93,20 @@ export const SessionHistorySchema: Schema = new Schema({
     },
 })
 
+SessionHistorySchema.index({ m_sessionUID: 1 }, { unique: false })
+SessionHistorySchema.index({ m_bestLapTimeLapNum: 1 }, { unique: false })
+SessionHistorySchema.index({ m_bestSector1LapNum: 1 }, { unique: false })
+SessionHistorySchema.index({ m_bestSector2LapNum: 1 }, { unique: false })
+SessionHistorySchema.index({ m_bestSector3LapNum: 1 }, { unique: false })
 SessionHistorySchema.index({ createdAt: -1 }, { unique: false })
+
+SessionHistorySchema.on('index', function(err) {
+    if (err) {
+        console.error('SessionHistorySchema index error: %s', err);
+    } else {
+        console.info('SessionHistorySchema indexing complete');
+    }
+});
 
 const SessionHistory = mongoose.model<ISessionHistoryDoc>('sessionhistory', SessionHistorySchema)
 

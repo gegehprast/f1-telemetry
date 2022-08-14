@@ -161,7 +161,16 @@ export const SessionSchema: Schema = new Schema(
     }
 )
 
+SessionSchema.index({ m_sessionUID: 1 }, { unique: false })
 SessionSchema.index({ createdAt: -1 }, { unique: false })
+
+SessionSchema.on('index', function(err) {
+    if (err) {
+        console.error('SessionSchema index error: %s', err);
+    } else {
+        console.info('SessionSchema indexing complete');
+    }
+});
 
 const Session = model<ISessionDoc, WithPagination<ISessionDoc>>('session', SessionSchema)
 

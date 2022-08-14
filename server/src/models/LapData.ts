@@ -147,6 +147,14 @@ LapDataSchema.index({ createdAt: -1 }, { unique: false })
 
 LapDataSchema.index({ m_currentLapNum: 1 }, { unique: false })
 
+LapDataSchema.on('index', function(err) {
+    if (err) {
+        console.error('LapDataSchema index error: %s', err);
+    } else {
+        console.info('LapDataSchema indexing complete');
+    }
+});
+
 const LapData = mongoose.model<ILapDataDoc>('lapdata', LapDataSchema)
 
 export default LapData

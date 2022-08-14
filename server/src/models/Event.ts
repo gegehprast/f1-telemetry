@@ -63,6 +63,14 @@ export const EventSchema: Schema = new Schema({
 
 EventSchema.index({ createdAt: -1 }, { unique: false })
 
+EventSchema.on('index', function(err) {
+    if (err) {
+        console.error('EventSchema index error: %s', err);
+    } else {
+        console.info('EventSchema indexing complete');
+    }
+});
+
 const Event = mongoose.model<IEventDoc>('event', EventSchema)
 
 export default Event

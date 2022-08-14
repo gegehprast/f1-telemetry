@@ -180,6 +180,14 @@ export const CarStatusSchema: Schema = new Schema({
 
 CarStatusSchema.index({ createdAt: -1 }, { unique: false })
 
+CarStatusSchema.on('index', function(err) {
+    if (err) {
+        console.error('CarStatusSchema index error: %s', err);
+    } else {
+        console.info('CarStatusSchema indexing complete');
+    }
+});
+
 const CarStatus = mongoose.model<ICarStatusDoc>('carstatus', CarStatusSchema)
 
 export default CarStatus
