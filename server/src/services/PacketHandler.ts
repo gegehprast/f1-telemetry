@@ -129,7 +129,10 @@ export const lapDataHandler: Listener = async (data: PacketLapData) => {
 
         if (m_lapData) {
             await LapData.updateOne(
-                { m_sessionUID: header.m_sessionUID, m_currentLapNum: m_lapData.m_currentLapNum },
+                {
+                    m_sessionUID: header.m_sessionUID,
+                    m_currentLapNum: m_lapData.m_currentLapNum,
+                },
                 {
                     ...header,
                     ...m_lapData,
@@ -154,17 +157,26 @@ export const participantsHandler: Listener = async (
 ) => {
     try {
         for (let i = 0; i < data.m_participants.length; i++) {
+            const header = m_headerParser(data.m_header)
             const participantData = data.m_participants[i]
-            const doc = new Participant({
-                ...m_headerParser(data.m_header),
-                ...participantData,
-                ...{
-                    m_numCars: data.m_numCars,
+            await Participant.updateOne(
+                {
+                    m_sessionUID: header.m_sessionUID,
                     carIndex: i,
-                    createdAt: new Date(),
                 },
-            })
-            await doc.save()
+                {
+                    ...header,
+                    ...participantData,
+                    ...{
+                        carIndex: data.m_header.m_playerCarIndex,
+                        createdAt: new Date(),
+                    },
+                },
+                {
+                    upsert: true,
+                    setDefaultsOnInsert: true,
+                }
+            ).exec()
         }
     } catch (error) {
         console.log(error)
