@@ -129,7 +129,7 @@ export const lapDataHandler: Listener = async (data: PacketLapData) => {
 
         if (m_lapData) {
             await LapData.updateOne(
-                { m_currentLapNum: m_lapData.m_currentLapNum },
+                { m_sessionUID: header.m_sessionUID, m_currentLapNum: m_lapData.m_currentLapNum },
                 {
                     ...header,
                     ...m_lapData,
