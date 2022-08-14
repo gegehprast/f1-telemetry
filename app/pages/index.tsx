@@ -2,17 +2,19 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { DRIVERS } from '../constants/drivers'
 import { SESSION_TYPES } from '../constants/sessionTypes'
 import { TEAMS } from '../constants/teams'
 import { TRACKS } from '../constants/track'
 import { convertDuration } from '../helpers/time'
-import { ISessionDoc, LapHistoryData } from '../Types'
+import { Driver, ISessionDoc, LapHistoryData, Team } from '../Types'
 
 interface ParsedSession {
     sessionUID: string;
     type: string;
     track: string;
-    team: string;
+    driver: Driver;
+    team: Team;
     totalLap: number
     bestLapTime: string;
     bestSector1Time: string;
@@ -52,11 +54,19 @@ const Home: NextPage = () => {
                 const bestSector2TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector2TimeInMS')
                 const bestSector3TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector3TimeInMS')
                 const player = session.participants.find(participant => participant.carIndex === session.m_playerCarIndex)
+                let team = { name: 'N/A', color: 'N/A' }
+                let driver = { abbreviation: 'SAI', firstName: 'Carlos', lastName: 'Sainz' }
+
+                if (player) {
+                    driver = DRIVERS[player.m_driverId] || { abbreviation: player.m_name, firstName: player.m_name, lastName: player.m_name }
+                    team = TEAMS[player.m_teamId] || team
+                }
 
                 return {
                     sessionUID: session.m_sessionUID,
                     track: TRACKS[session.m_trackId].name,
-                    team: player ? TEAMS[player.m_teamId].name : 'N/A',
+                    team: team,
+                    driver: driver,
                     type: SESSION_TYPES[session.m_sessionType].long,
                     totalLap: session.m_totalLaps,
                     bestLapTime: convertDuration(bestLapTimeData ? bestLapTimeData.m_lapTimeInMS : 0),
@@ -87,29 +97,31 @@ const Home: NextPage = () => {
                 <table className='w-full mt-10'>
                     <thead>
                         <tr>
-                            <th className='p-2 border'>Track</th>
-                            <th className='p-2 border'>Car</th>
-                            <th className='p-2 border'>Type</th>
-                            <th className='p-2 border'>Laps</th>
-                            <th className='p-2 border'>Best Lap</th>
-                            <th className='p-2 border' colSpan={3}>Best Sectors</th>
-                            <th className='p-2 border'>Date</th>
+                            <th className='p-2 border border-b-0'>Track</th>
+                            <th className='p-2 border border-b-0'>Driver</th>
+                            <th className='p-2 border border-b-0'>Car</th>
+                            <th className='p-2 border border-b-0'>Type</th>
+                            <th className='p-2 border border-b-0'>Laps</th>
+                            <th className='p-2 border border-b-0'>Best Lap</th>
+                            <th className='p-2 border border-b-0' colSpan={3}>Best Sectors</th>
+                            <th className='p-2 border border-b-0'>Date</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         {sessions.map(session => (
                             <Link key={session.sessionUID} href={`/laps/${session.sessionUID}`}>
-                                <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100'>
-                                    <td className='p-2 border'>{session.track}</td>
-                                    <td className='p-2 border'>{session.team}</td>
-                                    <td className='p-2 border'>{session.type}</td>
-                                    <td className='p-2 text-center border'>{session.totalLap}</td>
-                                    <td className='p-2 text-center border'>{session.bestLapTime}</td>
-                                    <td className='p-2 text-center border'>{session.bestSector1Time}</td>
-                                    <td className='p-2 text-center border'>{session.bestSector2Time}</td>
-                                    <td className='p-2 text-center border'>{session.bestSector3Time}</td>
-                                    <td className='p-2 text-center border' width={'22%'}>{session.date.toLocaleString('en-CA')}</td>
+                                <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100' >
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.track}</td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.driver.firstName} {session.driver.lastName}</td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color, color: session.team.color }}>{session.team.name}</td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.type}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.totalLap}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestLapTime}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector1Time}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector2Time}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector3Time}</td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }} width={'22%'}>{session.date.toLocaleString('en-CA')}</td>
                                 </tr>
                             </Link>
                         ))}
