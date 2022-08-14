@@ -1,4 +1,6 @@
-export const DRIVERS = {
+import { Driver } from "../Types"
+
+export const DRIVERS: Record<number, Driver> = {
     0: { abbreviation: 'SAI', firstName: 'Carlos', lastName: 'Sainz' },
     1: { abbreviation: 'KVY', firstName: 'Daniil', lastName: 'Kvyat' },
     2: { abbreviation: 'RIC', firstName: 'Daniel', lastName: 'Ricciardo' },
