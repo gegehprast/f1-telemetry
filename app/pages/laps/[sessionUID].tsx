@@ -52,16 +52,16 @@ const Lap: NextPage = () => {
             setLaps(laps)
 
             setBestLapIndex(
-                getBestTimeIndex(laps, 'm_lapTimeInMS')
+                getBestTimeIndex(laps, 'add_m_currentLapTimeInMS')
             )
             setBestSector1Index(
-                getBestTimeIndex(laps, 'm_sector1TimeInMS')
+                getBestTimeIndex(laps, 'add_m_sector1TimeInMS')
             )
             setBestSector2Index(
-                getBestTimeIndex(laps, 'm_sector2TimeInMS')
+                getBestTimeIndex(laps, 'add_m_sector2TimeInMS')
             )
             setBestSector3Index(
-                getBestTimeIndex(laps, 'm_sector3TimeInMS')
+                getBestTimeIndex(laps, 'add_m_sector3TimeInMS')
             )
         }
 
@@ -96,21 +96,21 @@ const Lap: NextPage = () => {
                                 <td className='p-2 text-center border'>{lap.m_currentLapNum}</td>
                                 <td className='p-2 text-center border'>{'>'} {lap.m_carPosition}</td>
                                 <td className='p-2 text-center border'>
-                                    <span className='p-1 font-bold rounded-full' style={{ backgroundColor: TYRES[lap.stint.m_tyreActualCompound].color }}>
-                                        {TYRES[lap.stint.m_tyreActualCompound].name}
+                                    <span className='p-1 font-bold rounded-full' style={{ backgroundColor: TYRES[lap.add_stint.m_tyreActualCompound].color }}>
+                                        {TYRES[lap.add_stint.m_tyreActualCompound].name}
                                     </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestLapIndex === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.m_lapTimeInMS)}
+                                    {convertDuration(lap.add_m_currentLapTimeInMS)}
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector1Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.m_sector1TimeInMS)}
+                                    {convertDuration(lap.add_m_sector1TimeInMS)}
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector2Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.m_sector2TimeInMS)}
+                                    {convertDuration(lap.add_m_sector2TimeInMS)}
                                 </td>
                                 <td className={`p-2 text-center border ${bestSector3Index === idx && 'bg-violet-100'}`}>
-                                    {convertDuration(lap.m_sector3TimeInMS)}
+                                    {convertDuration(lap.add_m_sector3TimeInMS)}
                                 </td>
                             </tr>
                         ))}

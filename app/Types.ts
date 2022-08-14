@@ -106,6 +106,11 @@ export interface ILapDataDoc {
     m_surfaceType: number[]
 
     // LapData
+    m_lastLapTimeInMS: number // correct one
+    m_currentLapTimeInMS: number // correct one
+    m_sector1TimeInMS: number // correct one
+    m_sector2TimeInMS: number // correct one
+    
     m_lastLapTime: number
     m_currentLapTime: number
     m_bestLapTime: number
@@ -129,11 +134,12 @@ export interface ILapDataDoc {
     createdAt: string
 
     // extras
-    m_lapTimeInMS: number
-    m_sector1TimeInMS: number
-    m_sector2TimeInMS: number
-    m_sector3TimeInMS: number
-    stint: TyreStintsHistoryData
+    add_m_currentLapTimeInMS: number
+    add_m_sector1TimeInMS: number
+    add_m_sector2TimeInMS: number
+    add_m_sector3TimeInMS: number
+    add_m_lapValidBitFlags: number
+    add_stint: TyreStintsHistoryData
 }
 
 export interface MarshalZone {

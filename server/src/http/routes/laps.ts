@@ -117,12 +117,12 @@ const handler = (router: express.Router) => {
             
             const records = lapData.map(lap => {
                 if (sessionHistory) {
-                    lap.m_lapTimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapTimeInMS
-                    lap.m_sector1TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector1TimeInMS
-                    lap.m_sector2TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector2TimeInMS
-                    lap.m_sector3TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector3TimeInMS
-                    lap.m_lapValidBitFlags = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapValidBitFlags
-                    lap.stint = sessionHistory.m_tyreStintsHistoryData.find(stint => {
+                    lap.add_m_currentLapTimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapTimeInMS
+                    lap.add_m_sector1TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector1TimeInMS
+                    lap.add_m_sector2TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector2TimeInMS
+                    lap.add_m_sector3TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector3TimeInMS
+                    lap.add_m_lapValidBitFlags = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapValidBitFlags
+                    lap.add_stint = sessionHistory.m_tyreStintsHistoryData.find(stint => {
                         return stint.m_endLap > lap.m_currentLapNum 
                     })
                 }
