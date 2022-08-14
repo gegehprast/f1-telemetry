@@ -12,7 +12,8 @@ const getLaps = async (sessionUID: string) => {
 }
 
 const getBestTimeIndex = (m_lapHistoryData: ILapDataDoc[], key: keyof ILapDataDoc) => {
-    const sorted = [...m_lapHistoryData].sort((a, b) => {
+    const filtered = [...m_lapHistoryData].filter(item => item[key] !== 0)
+    const sorted = filtered.sort((a, b) => {
         if (a[key] < b[key]) {
             return -1;
         }
@@ -23,6 +24,10 @@ const getBestTimeIndex = (m_lapHistoryData: ILapDataDoc[], key: keyof ILapDataDo
 
         return 0;
     })
+    
+    if (!sorted.length) {
+        return null
+    }
 
     return m_lapHistoryData.findIndex(lap => lap.m_currentLapNum === sorted[0].m_currentLapNum)
 }
@@ -31,10 +36,10 @@ const Lap: NextPage = () => {
     const router = useRouter()
     const { sessionUID } = router.query
     const [laps, setLaps] = useState<ILapDataDoc[]>([])
-    const [bestLapIndex, setBestLapIndex] = useState<number>(0)
-    const [bestSector1Index, setBestSector1Index] = useState<number>(0)
-    const [bestSector2Index, setBestSector2Index] = useState<number>(0)
-    const [bestSector3Index, setBestSector3Index] = useState<number>(0)
+    const [bestLapIndex, setBestLapIndex] = useState<number|null>(0)
+    const [bestSector1Index, setBestSector1Index] = useState<number|null>(0)
+    const [bestSector2Index, setBestSector2Index] = useState<number|null>(0)
+    const [bestSector3Index, setBestSector3Index] = useState<number|null>(0)
 
     useEffect(() => {
         async function _getSessions() {
