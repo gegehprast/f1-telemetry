@@ -120,5 +120,5 @@ export const TEAMS: Record<number, Team> = {
     92: { name: 'Haas 2020', color: HAAS_COLOR },
     93: { name: 'McLaren 2020', color: MCLAREN_COLOR },
     94: { name: 'Alfa Romeo 2020', color: ALFA_ROMEO_COLOR },
-    255: { name: 'Not found', color: '#FFFFFF' },
+    255: { name: 'Not found', color: '#000000' },
 }
