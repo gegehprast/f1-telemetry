@@ -1,6 +1,7 @@
 import express from 'express'
 import { PipelineStage } from 'mongoose'
 import LapData from '../../models/LapData'
+import Session from '../../models/Session'
 import SessionHistory from '../../models/SessionHistory'
 import { exceptionHandler } from '../exceptions/handler'
 
@@ -90,6 +91,13 @@ const lapDataPipelines: PipelineStage[] = [
 const handler = (router: express.Router) => {
     router.get('/laps/:sessionUID', async (req, res) => {
         try {
+            const session = await Session.findOne(
+                {
+                    m_sessionUID: req.params.sessionUID,
+                },
+                null,
+                { sort: { createdAt: -1 } }
+            ).exec()
             const sessionHistory = await SessionHistory.findOne(
                 {
                     m_sessionUID: req.params.sessionUID,
@@ -115,7 +123,7 @@ const handler = (router: express.Router) => {
                 { allowDiskUse: true }
             ).exec()
             
-            const records = lapData.map(lap => {
+            const laps = lapData.map(lap => {
                 if (sessionHistory) {
                     lap.add_m_currentLapTimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_lapTimeInMS
                     lap.add_m_sector1TimeInMS = sessionHistory.m_lapHistoryData[lap.m_currentLapNum - 1].m_sector1TimeInMS
@@ -130,7 +138,12 @@ const handler = (router: express.Router) => {
                 return lap
             })
 
-            res.json(records)
+            res.json({
+                ...session?.toJSON(),
+                ...{
+                    laps: laps
+                }
+            })
         } catch (error) {
             return exceptionHandler(error, res)
         }
