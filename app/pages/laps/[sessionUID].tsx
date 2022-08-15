@@ -1,14 +1,17 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
+import { TRACKS } from '../../constants/track';
 import { TYRES } from '../../constants/tyres';
+import { ParsedSession, parseSession } from '../../helpers/sessionparser';
 import { convertDuration } from '../../helpers/time'
-import { ILapDataDoc } from '../../Types';
+import { ILapDataDoc, ISessionDoc } from '../../Types';
 
-const getLaps = async (sessionUID: string) => {
-    return await fetch(`http://localhost:3001/api/laps/${sessionUID}`).then(res => res.json()) as ILapDataDoc[]
+type SessionWithLaps = ISessionDoc & { laps: ILapDataDoc[] }
+
+const getSessionWithLaps = async (sessionUID: string) => {
+    return await fetch(`http://localhost:3001/api/laps/${sessionUID}`).then(res => res.json()) as SessionWithLaps
 }
 
 const getBestTimeIndex = (m_lapHistoryData: ILapDataDoc[], key: keyof ILapDataDoc) => {
@@ -35,6 +38,7 @@ const getBestTimeIndex = (m_lapHistoryData: ILapDataDoc[], key: keyof ILapDataDo
 const Lap: NextPage = () => {
     const router = useRouter()
     const { sessionUID } = router.query
+    const [session, setSession] = useState<ParsedSession>()
     const [laps, setLaps] = useState<ILapDataDoc[]>([])
     const [bestLapIndex, setBestLapIndex] = useState<number|null>(0)
     const [bestSector1Index, setBestSector1Index] = useState<number|null>(0)
@@ -47,21 +51,23 @@ const Lap: NextPage = () => {
                 return
             }
 
-            const laps = await getLaps(sessionUID as string)
+            const session = await getSessionWithLaps(sessionUID as string)
 
-            setLaps(laps)
+            setSession(parseSession(session))
+
+            setLaps(session.laps)
 
             setBestLapIndex(
-                getBestTimeIndex(laps, 'add_m_currentLapTimeInMS')
+                getBestTimeIndex(session.laps, 'add_m_currentLapTimeInMS')
             )
             setBestSector1Index(
-                getBestTimeIndex(laps, 'add_m_sector1TimeInMS')
+                getBestTimeIndex(session.laps, 'add_m_sector1TimeInMS')
             )
             setBestSector2Index(
-                getBestTimeIndex(laps, 'add_m_sector2TimeInMS')
+                getBestTimeIndex(session.laps, 'add_m_sector2TimeInMS')
             )
             setBestSector3Index(
-                getBestTimeIndex(laps, 'add_m_sector3TimeInMS')
+                getBestTimeIndex(session.laps, 'add_m_sector3TimeInMS')
             )
         }
 
@@ -78,7 +84,19 @@ const Lap: NextPage = () => {
 
             <main className='w-1/2 h-screen mx-auto font-mono'>
                 <h1 className='text-4xl text-center '>LAPS</h1>
-
+                
+                {session && <table className='w-1/4 mt-10'>
+                    <tbody>
+                        <tr>
+                            <td className='border'>Track</td>
+                            <td className='border'>{session.track}</td>
+                        </tr>
+                        <tr>
+                            <td className='border'>Date</td>
+                            <td className='border'>{session.date.toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short', hourCycle: 'h23' })}</td>
+                        </tr>
+                    </tbody>
+                </table>}
                 <table className='w-full mt-10'>
                     <thead>
                         <tr>
