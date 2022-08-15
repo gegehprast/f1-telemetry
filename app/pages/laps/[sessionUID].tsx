@@ -85,15 +85,47 @@ const Lap: NextPage = () => {
             <main className='w-1/2 h-screen mx-auto font-mono'>
                 <h1 className='text-4xl text-center '>LAPS</h1>
                 
-                {session && <table className='w-1/4 mt-10'>
+                {session && <table className='w-[30%] mt-10'>
                     <tbody>
                         <tr>
-                            <td className='border'>Track</td>
-                            <td className='border'>{session.track}</td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Type
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                {session.type} ({session.totalLap} Laps)
+                            </td>
                         </tr>
                         <tr>
-                            <td className='border'>Date</td>
-                            <td className='border'>{session.date.toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short', hourCycle: 'h23' })}</td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Track
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                {session.track}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Team
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color, color: session.team.color }}>
+                                {session.team.name}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Driver
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                {session.driver.firstName} {session.driver.lastName}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Date
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                {session.date.toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short', hourCycle: 'h23' })}
+                            </td>
                         </tr>
                     </tbody>
                 </table>}
@@ -114,7 +146,9 @@ const Lap: NextPage = () => {
                                 <td className='p-2 text-center border'>{lap.m_currentLapNum}</td>
                                 <td className='p-2 text-center border'>{'>'} {lap.m_carPosition}</td>
                                 <td className='p-2 text-center border'>
-                                    <span className='p-1 font-bold rounded-full' style={{ backgroundColor: TYRES[lap.add_stint.m_tyreActualCompound].color }}>
+                                    <span className='p-1 font-bold rounded-full' 
+                                        style={{ backgroundColor: TYRES[lap.add_stint.m_tyreActualCompound].color }}
+                                    >
                                         {TYRES[lap.add_stint.m_tyreActualCompound].name}
                                     </span>
                                 </td>
