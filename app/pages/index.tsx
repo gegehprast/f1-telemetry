@@ -20,6 +20,10 @@ interface ParsedSession {
     bestSector1Time: string;
     bestSector2Time: string;
     bestSector3Time: string;
+    bestLapTimeValid: boolean;
+    bestSector1TimeValid: boolean;
+    bestSector2TimeValid: boolean;
+    bestSector3TimeValid: boolean;
     date: Date;
 }
 
@@ -43,6 +47,24 @@ const getBestTime = (m_lapHistoryData: LapHistoryData[], key: keyof LapHistoryDa
     return sorted[0]
 }
 
+const FLAGS = {
+    lap: 1,
+    sector1: 2,
+    sector2: 4,
+    sector3: 8
+}
+
+const checkFlag = (num: number) => {
+    var selected = [];
+    
+    if ((num & FLAGS.lap) === FLAGS.lap) selected.push('lap');
+    if ((num & FLAGS.sector1) === FLAGS.sector1) selected.push('sector1');
+    if ((num & FLAGS.sector2) === FLAGS.sector2) selected.push('sector2');
+    if ((num & FLAGS.sector3) === FLAGS.sector3) selected.push('sector3');
+
+    return selected;
+}
+
 const Home: NextPage = () => {
     const [sessions, setSessions] = useState<ParsedSession[]>([])
     useEffect(() => {
@@ -53,8 +75,13 @@ const Home: NextPage = () => {
                 const bestSector1TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector1TimeInMS')
                 const bestSector2TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector2TimeInMS')
                 const bestSector3TimeData = getBestTime(session.sessionHistory?.m_lapHistoryData, 'm_sector3TimeInMS')
+                const bestLapTimeValid = checkFlag(bestLapTimeData.m_lapValidBitFlags).includes('lap')
+                const bestSector1TimeValid = checkFlag(bestSector1TimeData.m_lapValidBitFlags).includes('sector1')
+                const bestSector2TimeValid = checkFlag(bestSector2TimeData.m_lapValidBitFlags).includes('sector2')
+                const bestSector3TimeValid = checkFlag(bestSector3TimeData.m_lapValidBitFlags).includes('sector3')
                 const player = session.participants.find(participant => participant.carIndex === session.m_playerCarIndex)
-                let team = { name: 'N/A', color: 'N/A' }
+
+                let team = { name: 'N/A', color: '#000000' }
                 let driver = { abbreviation: 'SAI', firstName: 'Carlos', lastName: 'Sainz' }
 
                 if (player) {
@@ -73,6 +100,10 @@ const Home: NextPage = () => {
                     bestSector1Time: convertDuration(bestSector1TimeData ? bestSector1TimeData.m_sector1TimeInMS : 0),
                     bestSector2Time: convertDuration(bestSector2TimeData ? bestSector2TimeData.m_sector2TimeInMS : 0),
                     bestSector3Time: convertDuration(bestSector3TimeData ? bestSector3TimeData.m_sector3TimeInMS : 0),
+                    bestLapTimeValid,
+                    bestSector1TimeValid,
+                    bestSector2TimeValid,
+                    bestSector3TimeValid,
                     date: new Date((new Date(session.createdAt)).getTime() - session.m_sessionTime)
                 }
             })
@@ -91,7 +122,7 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className='w-1/2 h-screen mx-auto font-mono'>
+            <main className='w-3/5 h-screen mx-auto font-mono'>
                 <h1 className='text-4xl text-center '>SESSIONS</h1>
 
                 <table className='w-full mt-10'>
@@ -112,16 +143,36 @@ const Home: NextPage = () => {
                         {sessions.map(session => (
                             <Link key={session.sessionUID} href={`/laps/${session.sessionUID}`}>
                                 <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100' >
-                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.track}</td>
-                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.driver.firstName} {session.driver.lastName}</td>
-                                    <td className='p-2 border' style={{ borderColor: session.team.color, color: session.team.color }}>{session.team.name}</td>
-                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>{session.type}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.totalLap}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestLapTime}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector1Time}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector2Time}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>{session.bestSector3Time}</td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }} width={'22%'}>{session.date.toLocaleString('en-CA')}</td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                        {session.track}
+                                    </td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                        {session.driver.firstName} {session.driver.lastName}
+                                    </td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color, color: session.team.color }}>
+                                        {session.team.name}
+                                    </td>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                        {session.type}
+                                    </td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>
+                                        {session.totalLap}
+                                    </td>
+                                    <td className={`p-2 text-center border ${!session.bestLapTimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='10%'>
+                                        {session.bestLapTime}
+                                    </td>
+                                    <td className={`p-2 text-center border ${!session.bestSector1TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
+                                        {session.bestSector1Time}
+                                    </td>
+                                    <td className={`p-2 text-center border ${!session.bestSector2TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
+                                        {session.bestSector2Time}
+                                    </td>
+                                    <td className={`p-2 text-center border ${!session.bestSector3TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
+                                        {session.bestSector3Time}
+                                    </td>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }} width={'15%'}>
+                                        {session.date.toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short', hourCycle: 'h23' })}
+                                    </td>
                                 </tr>
                             </Link>
                         ))}
