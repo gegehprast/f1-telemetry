@@ -1,6 +1,7 @@
 import express from 'express'
 import { PipelineStage } from 'mongoose'
 import LapData from '../../models/LapData'
+import Participant from '../../models/Participant'
 import Session from '../../models/Session'
 import SessionHistory from '../../models/SessionHistory'
 import { exceptionHandler } from '../exceptions/handler'
@@ -95,7 +96,25 @@ const handler = (router: express.Router) => {
                 {
                     m_sessionUID: req.params.sessionUID,
                 },
-                null,
+                {
+                    m_sessionUID: '$m_sessionUID',
+                    m_sessionTime: '$m_sessionTime',
+                    m_playerCarIndex: '$m_playerCarIndex',
+
+                    m_weather: '$m_weather',
+                    m_trackTemperature: '$m_trackTemperature',
+                    m_airTemperature: '$m_airTemperature',
+                    m_totalLaps: '$m_totalLaps',
+                    m_trackLength: '$m_trackLength',
+                    m_sessionType: '$m_sessionType',
+                    m_trackId: '$m_trackId',
+                    m_era: '$m_era',
+                    m_formula: '$m_formula',
+                    m_sessionTimeLeft: '$m_sessionTimeLeft',
+                    m_sessionDuration: '$m_sessionDuration',
+                    createdAt: '$createdAt',
+                    sessionhistories: '$sessionhistories',
+                },
                 { sort: { createdAt: -1 } }
             ).exec()
             const sessionHistory = await SessionHistory.findOne(
@@ -104,10 +123,50 @@ const handler = (router: express.Router) => {
                     $expr: {
                         $eq: ['$m_carIdx', '$m_playerCarIndex'],
                     },
+                    m_bestLapTimeLapNum: { $ne: 0 },
+                    m_bestSector1LapNum: { $ne: 0 },
+                    m_bestSector2LapNum: { $ne: 0 },
+                    m_bestSector3LapNum: { $ne: 0 },
                 },
-                null,
+                {
+                    m_sessionUID: '$m_sessionUID',
+                    m_playerCarIndex: '$m_playerCarIndex',
+
+                    m_carIdx: '$m_carIdx',
+                    m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
+                    m_bestSector1LapNum: '$m_bestSector1LapNum',
+                    m_bestSector2LapNum: '$m_bestSector2LapNum',
+                    m_bestSector3LapNum: '$m_bestSector3LapNum',
+                    m_lapHistoryData: '$m_lapHistoryData',
+                    m_tyreStintsHistoryData: '$m_tyreStintsHistoryData',
+                    createdAt: '$createdAt',
+                },
                 { sort: { createdAt: -1 } }
             ).exec()
+            const participants = await Participant.findOne(
+                {
+                    m_sessionUID: req.params.sessionUID,
+                    $expr: {
+                        $eq: ['$carIndex', '$m_playerCarIndex'],
+                    },
+                },
+                {
+                    m_sessionUID: '$m_sessionUID',
+
+                    m_aiControlled: '$m_aiControlled',
+                    m_driverId: '$m_driverId',
+                    m_name: '$m_name',
+                    m_nationality: '$m_nationality',
+                    m_raceNumber: '$m_raceNumber',
+                    m_teamId: '$m_teamId',
+
+                    m_numCars: '$m_numCars',
+                    carIndex: '$carIndex',
+                    createdAt: '$createdAt',
+                },
+                { sort: { createdAt: -1 } }
+            ).exec()
+
             const lapData = await LapData.aggregate(
                 [
                     {
@@ -141,10 +200,13 @@ const handler = (router: express.Router) => {
             res.json({
                 ...session?.toJSON(),
                 ...{
+                    sessionHistory: sessionHistory,
+                    participants: [participants],
                     laps: laps
                 }
             })
         } catch (error) {
+            console.log(error)
             return exceptionHandler(error, res)
         }
     })
