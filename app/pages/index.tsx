@@ -24,7 +24,7 @@ interface ParsedSession {
 }
 
 const getSessions = async () => {
-    return await fetch('http://localhost:3000/api/sessions').then(res => res.json()) as ISessionDoc[]
+    return await fetch('http://localhost:3001/api/sessions').then(res => res.json()) as ISessionDoc[]
 }
 
 const getBestTime = (m_lapHistoryData: LapHistoryData[], key: keyof LapHistoryData) => {

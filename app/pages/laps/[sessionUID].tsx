@@ -8,7 +8,7 @@ import { convertDuration } from '../../helpers/time'
 import { ILapDataDoc } from '../../Types';
 
 const getLaps = async (sessionUID: string) => {
-    return await fetch(`http://localhost:3000/api/laps/${sessionUID}`).then(res => res.json()) as ILapDataDoc[]
+    return await fetch(`http://localhost:3001/api/laps/${sessionUID}`).then(res => res.json()) as ILapDataDoc[]
 }
 
 const getBestTimeIndex = (m_lapHistoryData: ILapDataDoc[], key: keyof ILapDataDoc) => {
