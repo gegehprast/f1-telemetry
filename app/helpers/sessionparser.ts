@@ -9,17 +9,17 @@ export interface ParsedSession {
     sessionUID: string
     type: string
     track: string
-    driver?: Driver
-    team?: Team
+    driver: Driver
+    team: Team
     totalLap: number
-    bestLapTime?: string
-    bestSector1Time?: string
-    bestSector2Time?: string
-    bestSector3Time?: string
-    bestLapTimeValid?: boolean
-    bestSector1TimeValid?: boolean
-    bestSector2TimeValid?: boolean
-    bestSector3TimeValid?: boolean
+    bestLapTime: string
+    bestSector1Time: string
+    bestSector2Time: string
+    bestSector3Time: string
+    bestLapTimeValid: boolean
+    bestSector1TimeValid: boolean
+    bestSector2TimeValid: boolean
+    bestSector3TimeValid: boolean
     date: Date
 }
 
@@ -61,68 +61,53 @@ const checkFlag = (num: number) => {
 }
 
 export const parseSession: (sessions: ISessionDoc) => ParsedSession = (session) => {
-    let bestLapTimeData: LapHistoryData | undefined,
-        bestSector1TimeData: LapHistoryData | undefined,
-        bestSector2TimeData: LapHistoryData | undefined,
-        bestSector3TimeData: LapHistoryData | undefined,
-        bestLapTimeValid: boolean | undefined,
-        bestSector1TimeValid: boolean | undefined,
-        bestSector2TimeValid: boolean | undefined,
-        bestSector3TimeValid: boolean | undefined
+    const bestLapTimeData = getBestTime(
+        session.sessionHistory.m_lapHistoryData,
+        'm_lapTimeInMS'
+    )
+    const bestSector1TimeData = getBestTime(
+        session.sessionHistory.m_lapHistoryData,
+        'm_sector1TimeInMS'
+    )
+    const bestSector2TimeData = getBestTime(
+        session.sessionHistory.m_lapHistoryData,
+        'm_sector2TimeInMS'
+    )
+    const bestSector3TimeData = getBestTime(
+        session.sessionHistory.m_lapHistoryData,
+        'm_sector3TimeInMS'
+    )
+    const bestLapTimeValid = checkFlag(
+        bestLapTimeData.m_lapValidBitFlags || 0
+    ).includes('lap')
+    const bestSector1TimeValid = checkFlag(
+        bestSector1TimeData.m_lapValidBitFlags || 0
+    ).includes('sector1')
+    const bestSector2TimeValid = checkFlag(
+        bestSector2TimeData.m_lapValidBitFlags || 0
+    ).includes('sector2')
+    const bestSector3TimeValid = checkFlag(
+        bestSector3TimeData.m_lapValidBitFlags || 0
+    ).includes('sector3')
+    
+    const player = session.participants.find(
+        (participant) => participant.carIndex === session.m_playerCarIndex
+    )
 
-    let team: Team | undefined, driver: Driver | undefined
-
-    if (session.sessionHistory) {
-        bestLapTimeData = getBestTime(
-            session.sessionHistory.m_lapHistoryData,
-            'm_lapTimeInMS'
-        )
-        bestSector1TimeData = getBestTime(
-            session.sessionHistory.m_lapHistoryData,
-            'm_sector1TimeInMS'
-        )
-        bestSector2TimeData = getBestTime(
-            session.sessionHistory.m_lapHistoryData,
-            'm_sector2TimeInMS'
-        )
-        bestSector3TimeData = getBestTime(
-            session.sessionHistory.m_lapHistoryData,
-            'm_sector3TimeInMS'
-        )
-        bestLapTimeValid = checkFlag(
-            bestLapTimeData.m_lapValidBitFlags || 0
-        ).includes('lap')
-        bestSector1TimeValid = checkFlag(
-            bestSector1TimeData.m_lapValidBitFlags || 0
-        ).includes('sector1')
-        bestSector2TimeValid = checkFlag(
-            bestSector2TimeData.m_lapValidBitFlags || 0
-        ).includes('sector2')
-        bestSector3TimeValid = checkFlag(
-            bestSector3TimeData.m_lapValidBitFlags || 0
-        ).includes('sector3')
+    let team = { name: 'N/A', color: '#000000' }
+    let driver = {
+        abbreviation: 'SAI',
+        firstName: 'Carlos',
+        lastName: 'Sainz',
     }
 
-    if (session.participants) {
-        const player = session.participants.find(
-            (participant) => participant.carIndex === session.m_playerCarIndex
-        )
-
-        team = { name: 'N/A', color: '#000000' }
-        driver = {
-            abbreviation: 'SAI',
-            firstName: 'Carlos',
-            lastName: 'Sainz',
+    if (player) {
+        driver = DRIVERS[player.m_driverId] || {
+            abbreviation: player.m_name,
+            firstName: player.m_name,
+            lastName: player.m_name,
         }
-
-        if (player) {
-            driver = DRIVERS[player.m_driverId] || {
-                abbreviation: player.m_name,
-                firstName: player.m_name,
-                lastName: player.m_name,
-            }
-            team = TEAMS[player.m_teamId] || team
-        }
+        team = TEAMS[player.m_teamId] || team
     }
 
     return {

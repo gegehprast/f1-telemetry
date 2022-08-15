@@ -51,34 +51,34 @@ const Home: NextPage = () => {
                         {sessions.map(session => (
                             <Link key={session.sessionUID} href={`/laps/${session.sessionUID}`}>
                                 <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100' >
-                                    <td className='p-2 border' style={{ borderColor: session.team?.color }}>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
                                         {session.track}
                                     </td>
-                                    <td className='p-2 border' style={{ borderColor: session.team?.color }}>
-                                        {session.driver?.firstName} {session.driver?.lastName}
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                        {session.driver.firstName} {session.driver.lastName}
                                     </td>
-                                    <td className='p-2 border' style={{ borderColor: session.team?.color, color: session.team?.color }}>
-                                        {session.team?.name}
+                                    <td className='p-2 border' style={{ borderColor: session.team.color, color: session.team.color }}>
+                                        {session.team.name}
                                     </td>
-                                    <td className='p-2 border' style={{ borderColor: session.team?.color }}>
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
                                         {session.type}
                                     </td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team?.color }}>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }}>
                                         {session.totalLap}
                                     </td>
-                                    <td className={`p-2 text-center border ${!session.bestLapTimeValid && 'line-through'}`} style={{ borderColor: session.team?.color }} width='10%'>
+                                    <td className={`p-2 text-center border ${!session.bestLapTimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='10%'>
                                         {session.bestLapTime}
                                     </td>
-                                    <td className={`p-2 text-center border ${!session.bestSector1TimeValid && 'line-through'}`} style={{ borderColor: session.team?.color }} width='8%'>
+                                    <td className={`p-2 text-center border ${!session.bestSector1TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
                                         {session.bestSector1Time}
                                     </td>
-                                    <td className={`p-2 text-center border ${!session.bestSector2TimeValid && 'line-through'}`} style={{ borderColor: session.team?.color }} width='8%'>
+                                    <td className={`p-2 text-center border ${!session.bestSector2TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
                                         {session.bestSector2Time}
                                     </td>
-                                    <td className={`p-2 text-center border ${!session.bestSector3TimeValid && 'line-through'}`} style={{ borderColor: session.team?.color }} width='8%'>
+                                    <td className={`p-2 text-center border ${!session.bestSector3TimeValid && 'line-through'}`} style={{ borderColor: session.team.color }} width='8%'>
                                         {session.bestSector3Time}
                                     </td>
-                                    <td className='p-2 text-center border' style={{ borderColor: session.team?.color }} width={'15%'}>
+                                    <td className='p-2 text-center border' style={{ borderColor: session.team.color }} width={'15%'}>
                                         {session.date.toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short', hourCycle: 'h23' })}
                                     </td>
                                 </tr>
