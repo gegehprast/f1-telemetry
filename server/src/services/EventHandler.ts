@@ -1,6 +1,6 @@
 import { PacketEventData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import Event from '../models/Event'
-import { Listener, parsePacketHeader } from './Helper'
+import { Listener, MinifiedPacketHeader } from './Helper'
 
 export const eventHandler: Listener = async (data: PacketEventData) => {
     try {
@@ -9,7 +9,7 @@ export const eventHandler: Listener = async (data: PacketEventData) => {
         }
 
         const doc = new Event({
-            ...parsePacketHeader(data.m_header),
+            ...MinifiedPacketHeader(data.m_header),
             ...{
                 ...data,
                 createdAt: new Date(),

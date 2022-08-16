@@ -1,13 +1,13 @@
 import { PacketParticipantsData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import Participant from '../models/Participant'
-import { Listener, parsePacketHeader } from './Helper'
+import { Listener, MinifiedPacketHeader } from './Helper'
 
 export const participantsHandler: Listener = async (
     data: PacketParticipantsData
 ) => {
     try {
         for (let i = 0; i < data.m_participants.length; i++) {
-            const header = parsePacketHeader(data.m_header)
+            const header = MinifiedPacketHeader(data.m_header)
             const participantData = data.m_participants[i]
             await Participant.updateOne(
                 {

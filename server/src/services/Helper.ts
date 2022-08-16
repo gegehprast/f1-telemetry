@@ -13,12 +13,30 @@ export interface ModifiedPacketHeader {
     m_surfaceType: number[]
 }
 
-export const m_headerParser = (
+export interface MinifiedPacketHeader {
+    m_sessionUID: string
+    m_sessionTime: number
+    m_playerCarIndex: number
+}
+
+export const parsePacketHeader = (
     m_header: PacketHeader
 ): ModifiedPacketHeader => {
     return {
         ...m_header,
         ...{ m_sessionUID: m_header.m_sessionUID.toString() },
+    }
+}
+
+export const MinifiedPacketHeader = (
+    m_header: PacketHeader
+): MinifiedPacketHeader => {
+    const header = parsePacketHeader(m_header)
+
+    return {
+        m_sessionUID: header.m_sessionUID,
+        m_sessionTime: header.m_sessionTime,
+        m_playerCarIndex: header.m_playerCarIndex,
     }
 }
 

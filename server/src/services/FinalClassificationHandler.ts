@@ -1,6 +1,6 @@
 import { PacketFinalClassificationData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import FinalClassification from '../models/FinalClassification'
-import { Listener, parsePacketHeader } from './Helper'
+import { Listener, MinifiedPacketHeader } from './Helper'
 
 export const finalClassificationHandler: Listener = async (
     data: PacketFinalClassificationData
@@ -10,7 +10,7 @@ export const finalClassificationHandler: Listener = async (
             const finalClassificationData = data.m_classificationData[i]
 
             const doc = new FinalClassification({
-                ...parsePacketHeader(data.m_header),
+                ...MinifiedPacketHeader(data.m_header),
                 ...finalClassificationData,
                 ...{
                     m_numCars: data.m_numCars,
