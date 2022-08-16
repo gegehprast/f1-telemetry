@@ -1,27 +1,10 @@
 import { DRIVERS } from "../constants/drivers";
+import { FORMULAS } from "../constants/formulas";
 import { SESSION_TYPES } from "../constants/sessionTypes";
 import { TEAMS } from "../constants/teams";
 import { TRACKS } from "../constants/track";
-import { Driver, ISessionDoc, LapHistoryData, Team } from "../Types";
+import { ISessionDoc, LapHistoryData } from "../Types";
 import { convertDuration } from "./time";
-
-export interface ParsedSession {
-    sessionUID: string
-    type: string
-    track: string
-    driver: Driver
-    team: Team
-    totalLap: number
-    bestLapTime: string
-    bestSector1Time: string
-    bestSector2Time: string
-    bestSector3Time: string
-    bestLapTimeValid: boolean
-    bestSector1TimeValid: boolean
-    bestSector2TimeValid: boolean
-    bestSector3TimeValid: boolean
-    date: Date
-}
 
 const getBestTime = (
     m_lapHistoryData: LapHistoryData[],
@@ -60,7 +43,7 @@ const checkFlag = (num: number) => {
     return selected
 }
 
-export const parseSession: (sessions: ISessionDoc) => ParsedSession = (session) => {
+export const parseSession = (session: ISessionDoc) => {
     const bestLapTimeData = getBestTime(
         session.sessionHistory.m_lapHistoryData,
         'm_lapTimeInMS'
@@ -112,15 +95,24 @@ export const parseSession: (sessions: ISessionDoc) => ParsedSession = (session) 
 
     return {
         sessionUID: session.m_sessionUID,
+        m_formula: session.m_formula,
+        formula: FORMULAS[session.m_formula],
         track: TRACKS[session.m_trackId].name,
         team: team,
         driver: driver,
         type: SESSION_TYPES[session.m_sessionType].long,
         totalLap: session.m_totalLaps,
-        bestLapTime: bestLapTimeData && convertDuration(bestLapTimeData.m_lapTimeInMS),
-        bestSector1Time: bestLapTimeData && convertDuration(bestLapTimeData.m_sector1TimeInMS),
-        bestSector2Time: bestLapTimeData && convertDuration(bestLapTimeData.m_sector2TimeInMS),
-        bestSector3Time: bestLapTimeData && convertDuration(bestLapTimeData.m_sector3TimeInMS),
+        bestLapTime:
+            bestLapTimeData && convertDuration(bestLapTimeData.m_lapTimeInMS),
+        bestSector1Time:
+            bestLapTimeData &&
+            convertDuration(bestLapTimeData.m_sector1TimeInMS),
+        bestSector2Time:
+            bestLapTimeData &&
+            convertDuration(bestLapTimeData.m_sector2TimeInMS),
+        bestSector3Time:
+            bestLapTimeData &&
+            convertDuration(bestLapTimeData.m_sector3TimeInMS),
         bestLapTimeValid: bestLapTimeValid,
         bestSector1TimeValid: bestSector1TimeValid,
         bestSector2TimeValid: bestSector2TimeValid,
@@ -130,3 +122,5 @@ export const parseSession: (sessions: ISessionDoc) => ParsedSession = (session) 
         ),
     }
 }
+
+export type ParsedSession = ReturnType<typeof parseSession>
