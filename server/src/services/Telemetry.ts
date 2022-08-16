@@ -38,7 +38,7 @@ class Telemetry {
 
         this.client.on(PACKETS.carSetups, carSetupsHandler)
 
-        this.client.on(PACKETS.carStatus, carStatusHandler)
+        // this.client.on(PACKETS.carStatus, carStatusHandler)
 
         this.client.on(PACKETS.carTelemetry, carTelemetryHandler)
 
@@ -64,7 +64,7 @@ class Telemetry {
 
         this.client.off(PACKETS.carSetups, carSetupsHandler)
 
-        this.client.off(PACKETS.carStatus, carStatusHandler)
+        // this.client.off(PACKETS.carStatus, carStatusHandler)
 
         this.client.off(PACKETS.carTelemetry, carTelemetryHandler)
 
