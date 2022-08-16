@@ -1,10 +1,10 @@
 import { PacketSessionData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import Session from '../models/Session'
-import { Listener, m_headerParser } from './Helper'
+import { Listener, parsePacketHeader } from './Helper'
 
 export const sessionHandler: Listener = async (data: PacketSessionData) => {
     try {
-        const header = m_headerParser(data.m_header)
+        const header = parsePacketHeader(data.m_header)
         await Session.updateOne(
             { m_sessionUID: header.m_sessionUID },
             {

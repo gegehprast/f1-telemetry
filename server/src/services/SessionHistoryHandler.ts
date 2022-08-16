@@ -1,6 +1,6 @@
 import { PacketSessionHistoryData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import SessionHistory from '../models/SessionHistory'
-import { Listener, m_headerParser } from './Helper'
+import { Listener, parsePacketHeader } from './Helper'
 
 export const sessionHistoryHandler: Listener = async (
     data: PacketSessionHistoryData
@@ -10,7 +10,7 @@ export const sessionHistoryHandler: Listener = async (
     }
 
     try {
-        const header = m_headerParser(data.m_header)
+        const header = parsePacketHeader(data.m_header)
         await SessionHistory.updateOne(
             { m_sessionUID: header.m_sessionUID },
             {

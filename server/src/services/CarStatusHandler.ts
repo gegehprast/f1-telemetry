@@ -1,6 +1,6 @@
 import { PacketCarStatusData } from '@racehub-io/f1-telemetry-client/build/src/parsers/packets/types'
 import CarStatus from '../models/CarStatus'
-import { Listener, m_headerParser, onlyPlayerCarData } from './Helper'
+import { Listener, parsePacketHeader, onlyPlayerCarData } from './Helper'
 
 export const carStatusHandler: Listener = async (data: PacketCarStatusData) => {
     try {
@@ -9,7 +9,7 @@ export const carStatusHandler: Listener = async (data: PacketCarStatusData) => {
             data.m_carStatusData
         )
         const doc = new CarStatus({
-            ...m_headerParser(data.m_header),
+            ...parsePacketHeader(data.m_header),
             ...m_carStatusData,
             ...{
                 createdAt: new Date(),
