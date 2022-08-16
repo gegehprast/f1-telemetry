@@ -8,9 +8,9 @@
     "build": "tsc",
     "watch": "npm run build -- -w",
     "predev": "npm run build",
-    "dev": "nodemon --watch **/*.ts --exec ts-node ./src/index.ts",
+    "dev": "set APP_ENV=development && nodemon --watch **/*.ts --exec ts-node ./src/index.ts",
     "preprod": "npm run build",
-    "prod": "node . --unhandled-rejections=warn",
+    "prod": "set APP_ENV=production && node . --unhandled-rejections=warn",
     "start": "npm run prod"
   },
   "author": "Gegeh Prast",

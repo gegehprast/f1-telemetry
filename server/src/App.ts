@@ -20,18 +20,19 @@ class App {
         const { server, app } = await initHTTP()
         this.httpServer = server
         this.expressApp = app
-
+        
         this.Telemetry.start()
-
-        // I'll just put it here for now
-        console.log('[APP] Opening App interface on default browser.')
-        open(`http://localhost:3000`)
+        
+        if (process.env.APP_ENV && process.env.APP_ENV.trim()) {
+            console.log('[APP] Opening App interface on default browser.')
+            open(`http://localhost:3000`)
+        }
     }
 
     public stop = async () => {
-        await dbDisconnect()
-
         this.Telemetry.stop()
+
+        await dbDisconnect()
     }
 }
 
