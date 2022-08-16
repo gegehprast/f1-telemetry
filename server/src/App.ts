@@ -23,7 +23,7 @@ class App {
         
         this.Telemetry.start()
         
-        if (process.env.APP_ENV && process.env.APP_ENV.trim()) {
+        if (process.env.APP_ENV && process.env.APP_ENV.trim() === 'production') {
             console.log('[APP] Opening App interface on default browser.')
             open(`http://localhost:3000`)
         }
