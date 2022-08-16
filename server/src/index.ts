@@ -17,7 +17,21 @@ process.on('unhandledRejection', (reason, promise) => {
     'uncaughtException',
     'SIGTERM',
 ].forEach((eventType) => {
-    ;(process as NodeJS.EventEmitter).on(eventType, () => App.stop())
+    if (eventType === 'uncaughtException') {
+        process.on('uncaughtException', async (error, origin) => {
+            console.log(error, origin)
+
+            await App.stop()
+
+            process.exit(0)
+        })
+    } else {
+        ;(process as NodeJS.EventEmitter).on(eventType, async () => {
+            await App.stop()
+
+            process.exit(0)
+        })
+    }
 })
 
 // start app
