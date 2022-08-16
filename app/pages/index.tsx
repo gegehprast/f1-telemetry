@@ -36,6 +36,7 @@ const Home: NextPage = () => {
                 <table className='w-full mt-10'>
                     <thead>
                         <tr>
+                            <th className='p-2 border border-b-0'>Formula</th>
                             <th className='p-2 border border-b-0'>Track</th>
                             <th className='p-2 border border-b-0'>Driver</th>
                             <th className='p-2 border border-b-0'>Car</th>
@@ -51,6 +52,9 @@ const Home: NextPage = () => {
                         {sessions.map(session => (
                             <Link key={session.sessionUID} href={`/laps/${session.sessionUID}`}>
                                 <tr className='cursor-pointer hover:bg-blue-100 odd:bg-gray-100' >
+                                    <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                        {session.formula}
+                                    </td>
                                     <td className='p-2 border' style={{ borderColor: session.team.color }}>
                                         {session.track}
                                     </td>
