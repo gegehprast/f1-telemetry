@@ -89,6 +89,14 @@ const Lap: NextPage = () => {
                     <tbody>
                         <tr>
                             <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                Formula
+                            </td>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
+                                {session.formula}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className='p-2 border' style={{ borderColor: session.team.color }}>
                                 Type
                             </td>
                             <td className='p-2 border' style={{ borderColor: session.team.color }}>
