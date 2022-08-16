@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { TRACKS } from '../../constants/track';
-import { TYRES } from '../../constants/tyres';
+import { FORMULA_ACTUAL_TYRES, FORMULA_VISUAL_TYRES, TYRES } from '../../constants/tyres';
 import { ParsedSession, parseSession } from '../../helpers/sessionparser';
 import { convertDuration } from '../../helpers/time'
 import { ILapDataDoc, ISessionDoc } from '../../Types';
@@ -82,10 +82,10 @@ const Lap: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className='w-1/2 h-screen mx-auto font-mono'>
+            {session && <main className='w-1/2 h-screen mx-auto font-mono'>
                 <h1 className='text-4xl text-center '>LAPS</h1>
                 
-                {session && <table className='w-[30%] mt-10'>
+                <table className='w-[30%] mt-10'>
                     <tbody>
                         <tr>
                             <td className='p-2 border' style={{ borderColor: session.team.color }}>
@@ -128,7 +128,7 @@ const Lap: NextPage = () => {
                             </td>
                         </tr>
                     </tbody>
-                </table>}
+                </table>
                 <table className='w-full mt-10'>
                     <thead>
                         <tr>
@@ -147,9 +147,11 @@ const Lap: NextPage = () => {
                                 <td className='p-2 text-center border'>{'>'} {lap.m_carPosition}</td>
                                 <td className='p-2 text-center border'>
                                     <span className='p-1 font-bold rounded-full' 
-                                        style={{ backgroundColor: TYRES[lap.add_stint.m_tyreActualCompound].color }}
+                                        style={{ 
+                                            backgroundColor: FORMULA_ACTUAL_TYRES[session.m_formula][lap.add_stint.m_tyreActualCompound].color 
+                                        }}
                                     >
-                                        {TYRES[lap.add_stint.m_tyreActualCompound].name}
+                                        {FORMULA_ACTUAL_TYRES[session.m_formula][lap.add_stint.m_tyreActualCompound].name} 
                                     </span>
                                 </td>
                                 <td className={`p-2 text-center border ${bestLapIndex === idx && 'bg-violet-100'}`}>
@@ -176,7 +178,7 @@ const Lap: NextPage = () => {
                         ))}
                     </tbody>
                 </table>
-            </main>
+            </main>}
         </div>
     )
 }
