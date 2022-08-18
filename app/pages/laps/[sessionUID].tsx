@@ -82,7 +82,7 @@ const Lap: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            {session && <main className='w-1/2 h-screen mx-auto font-mono'>
+            {session && <main className='w-1/2 min-h-screen py-10 mx-auto font-mono bg-gray-100'>
                 <h1 className='text-4xl text-center '>LAPS</h1>
                 
                 <table className='w-[30%] mt-10'>
