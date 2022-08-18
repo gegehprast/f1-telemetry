@@ -58,10 +58,20 @@ const sessionPipelines: PipelineStage[] = [
     },
     {
         $match: {
-            'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
+            $and: [
+                {
+                    'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
+                    'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
+                    'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
+                    'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
+                },
+                {
+                    'sessionhistories.m_bestLapTimeLapNum': { $ne: 199 },
+                    'sessionhistories.m_bestSector1LapNum': { $ne: 199 },
+                    'sessionhistories.m_bestSector2LapNum': { $ne: 199 },
+                    'sessionhistories.m_bestSector3LapNum': { $ne: 199 },
+                },
+            ],
         },
     },
     {
