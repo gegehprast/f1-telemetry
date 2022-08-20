@@ -156,7 +156,7 @@ const Lap: NextPage = () => {
                                 <td className='p-2 text-center border'>
                                     <span className='p-1 font-bold rounded-full' 
                                         style={{ 
-                                            backgroundColor: FORMULA_ACTUAL_TYRES[session.m_formula][lap.add_stint.m_tyreActualCompound].color 
+                                            backgroundColor: FORMULA_VISUAL_TYRES[session.m_formula][lap.add_stint.m_tyreVisualCompound].color 
                                         }}
                                     >
                                         {FORMULA_ACTUAL_TYRES[session.m_formula][lap.add_stint.m_tyreActualCompound].name} 
