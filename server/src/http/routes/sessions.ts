@@ -2,7 +2,6 @@ import express from 'express'
 import { PipelineStage } from 'mongoose'
 import Participant, { IParticipantDoc } from '../../models/Participant'
 import Session, { ISessionDoc } from '../../models/Session'
-import SessionHistory, { ISessionHistoryDoc } from '../../models/SessionHistory'
 import { exceptionHandler } from '../exceptions/handler'
 
 const sessionPipelines: PipelineStage[] = [
@@ -45,7 +44,40 @@ const sessionPipelines: PipelineStage[] = [
                         m_bestSector1LapNum: '$m_bestSector1LapNum',
                         m_bestSector2LapNum: '$m_bestSector2LapNum',
                         m_bestSector3LapNum: '$m_bestSector3LapNum',
-                        m_lapHistoryData: '$m_lapHistoryData',
+                        m_lapHistoryData: {
+                            $filter: {
+                                input: '$m_lapHistoryData',
+                                cond: {
+                                    $and: [
+                                        {
+                                            $ne: [
+                                                '$$m_lapHistoryData.m_lapTimeInMS',
+                                                0,
+                                            ],
+                                        },
+                                        {
+                                            $ne: [
+                                                '$$m_lapHistoryData.m_sector1TimeInMS',
+                                                0,
+                                            ],
+                                        },
+                                        {
+                                            $ne: [
+                                                '$$m_lapHistoryData.m_sector2TimeInMS',
+                                                0,
+                                            ],
+                                        },
+                                        {
+                                            $ne: [
+                                                '$$m_lapHistoryData.m_sector3TimeInMS',
+                                                0,
+                                            ],
+                                        },
+                                    ],
+                                },
+                                as: 'm_lapHistoryData',
+                            },
+                        },
                         createdAt: '$createdAt',
                     },
                 },
@@ -58,20 +90,11 @@ const sessionPipelines: PipelineStage[] = [
     },
     {
         $match: {
-            $and: [
-                {
-                    'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
-                    'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
-                    'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
-                    'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
-                },
-                {
-                    'sessionhistories.m_bestLapTimeLapNum': { $ne: 199 },
-                    'sessionhistories.m_bestSector1LapNum': { $ne: 199 },
-                    'sessionhistories.m_bestSector2LapNum': { $ne: 199 },
-                    'sessionhistories.m_bestSector3LapNum': { $ne: 199 },
-                },
-            ],
+            'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
+            'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
+            'sessionhistories.m_lapHistoryData.0': { $exists: true },
         },
     },
     {
@@ -116,64 +139,7 @@ const sessionPipelines: PipelineStage[] = [
             m_sessionTimeLeft: '$m_sessionTimeLeft',
             m_sessionDuration: '$m_sessionDuration',
             createdAt: '$createdAt',
-            sessionhistories: '$sessionhistories',
-        },
-    },
-]
-const sessionHistoryPipelines: PipelineStage[] = [
-    {
-        $sort: { createdAt: -1 },
-    },
-    {
-        $group: {
-            originalId: { $first: '$_id' }, // Hold onto original ID.
-            _id: '$m_sessionUID', // Set the unique identifier
-            m_sessionUID: { $first: '$m_sessionUID' },
-            m_playerCarIndex: { $first: '$m_playerCarIndex' },
-
-            m_carIdx: { $first: '$m_carIdx' },
-            m_bestLapTimeLapNum: { $first: '$m_bestLapTimeLapNum' },
-            m_bestSector1LapNum: { $first: '$m_bestSector1LapNum' },
-            m_bestSector2LapNum: { $first: '$m_bestSector2LapNum' },
-            m_bestSector3LapNum: { $first: '$m_bestSector3LapNum' },
-            m_lapHistoryData: { $first: '$m_lapHistoryData' },
-            createdAt: { $first: '$createdAt' },
-        },
-    },
-    {
-        $project: {
-            _id: '$originalId', // Restore original ID.
-            m_sessionUID: '$m_sessionUID',
-            m_playerCarIndex: '$m_playerCarIndex',
-
-            m_carIdx: '$m_carIdx',
-            m_bestLapTimeLapNum: '$m_bestLapTimeLapNum',
-            m_bestSector1LapNum: '$m_bestSector1LapNum',
-            m_bestSector2LapNum: '$m_bestSector2LapNum',
-            m_bestSector3LapNum: '$m_bestSector3LapNum',
-            m_lapHistoryData: {
-                $filter: {
-                    input: '$m_lapHistoryData',
-                    cond: {
-                        $and: [
-                            {
-                                $ne: ['$$m_lapHistoryData.m_lapTimeInMS', 0]
-                            },
-                            {
-                                $ne: ['$$m_lapHistoryData.m_sector1TimeInMS', 0]
-                            },
-                            {
-                                $ne: ['$$m_lapHistoryData.m_sector2TimeInMS', 0]
-                            },
-                            {
-                                $ne: ['$$m_lapHistoryData.m_sector3TimeInMS', 0]
-                            },
-                        ],
-                    },
-                    as: 'm_lapHistoryData',
-                },
-            },
-            createdAt: '$createdAt',
+            sessionHistory: '$sessionhistories',
         },
     },
 ]
@@ -222,7 +188,7 @@ const handler = (router: express.Router) => {
     router.get('/sessions', async (req, res) => {
         try {
             const perPage = 50
-            const page = 1
+            const page = req.query.page ? parseInt(req.query.page as string) : 1
             const sessions: ISessionDoc[] = await Session.aggregate(
                 [...sessionPipelines],
                 { allowDiskUse: true }
@@ -232,36 +198,9 @@ const handler = (router: express.Router) => {
                 .limit(perPage)
                 .exec()
             const sessionUIDs = sessions.map((session) => session.m_sessionUID)
-            const sessionHistories: ISessionHistoryDoc[] =
-                await SessionHistory.aggregate(
-                    [
-                        {
-                            $match: {
-                                'm_sessionUID': {
-                                    $in: sessionUIDs,
-                                },
-                                $expr: {
-                                    $eq: [
-                                        '$m_carIdx',
-                                        '$m_playerCarIndex',
-                                    ],
-                                },
-                            },
-                        },
-                        ...sessionHistoryPipelines,
-                    ],
-                    { allowDiskUse: true }
-                )
-                    .sort({ createdAt: -1 })
-                    .exec()
 
             // map sessionHistory to sessions
             const promises = sessions.map(async (session) => {
-                const sessionHistory = sessionHistories.find(
-                    (sessionHistory) =>
-                        sessionHistory.m_sessionUID ===
-                        session.m_sessionUID
-                )
                 const participants: IParticipantDoc[] = await Participant.aggregate(
                     [
                         {
@@ -275,11 +214,6 @@ const handler = (router: express.Router) => {
                 )
                     .sort({ createdAt: -1 })
                     .exec()
-                
-
-                if (sessionHistory) {
-                    session.sessionHistory = sessionHistory
-                }
 
                 if (participants) {
                     session.participants = participants
