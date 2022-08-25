@@ -123,10 +123,7 @@ const handler = (router: express.Router) => {
                     $expr: {
                         $eq: ['$m_carIdx', '$m_playerCarIndex'],
                     },
-                    m_bestLapTimeLapNum: { $ne: 0 },
-                    m_bestSector1LapNum: { $ne: 0 },
-                    m_bestSector2LapNum: { $ne: 0 },
-                    m_bestSector3LapNum: { $ne: 0 },
+                    'm_lapHistoryData.0': { $exists: true },
                 },
                 {
                     m_sessionUID: '$m_sessionUID',

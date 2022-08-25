@@ -90,10 +90,6 @@ const sessionPipelines: PipelineStage[] = [
     },
     {
         $match: {
-            'sessionhistories.m_bestLapTimeLapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector1LapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector2LapNum': { $ne: 0 },
-            'sessionhistories.m_bestSector3LapNum': { $ne: 0 },
             'sessionhistories.m_lapHistoryData.0': { $exists: true },
         },
     },
@@ -197,7 +193,6 @@ const handler = (router: express.Router) => {
                 .skip((page - 1) * perPage)
                 .limit(perPage)
                 .exec()
-            const sessionUIDs = sessions.map((session) => session.m_sessionUID)
 
             // map sessionHistory to sessions
             const promises = sessions.map(async (session) => {

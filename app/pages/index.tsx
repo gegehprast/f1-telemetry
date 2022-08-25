@@ -1,26 +1,34 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { ParsedSession, parseSession } from '../helpers/sessionparser'
 import { ISessionDoc } from '../Types'
 
-const getSessions = async () => {
-    return await fetch('http://localhost:3001/api/sessions').then(res => res.json()) as ISessionDoc[]
+const getSessions = async (page: number) => {
+    return (await fetch(`http://localhost:3001/api/sessions?page=${page}`).then(
+        res => res.json()
+    )) as ISessionDoc[]
 }
 
 const Home: NextPage = () => {
     const [sessions, setSessions] = useState<ParsedSession[]>([])
+    const router = useRouter()
+    const page = router.query.page ? parseInt(router.query.page as string) : 1
+
     useEffect(() => {
         async function _getSessions() {
-            const sessions = await getSessions()
-            const parsedSessions = sessions.map(session => parseSession(session))
+            const sessions = await getSessions(page)
+            const parsedSessions = sessions.map(session =>
+                parseSession(session)
+            )
 
             setSessions(parsedSessions)
         }
 
         _getSessions()
-    }, [])
+    }, [page])
 
     return (
         <div>
@@ -38,6 +46,10 @@ const Home: NextPage = () => {
 
             <main className="w-3/5 min-h-screen py-10 mx-auto font-mono bg-gray-100">
                 <h1 className="text-4xl text-center ">SESSIONS</h1>
+
+                <button className='px-2 py-1 mx-1 border' onClick={() => router.push(`/?page=${page - 1}`, `/?page=${page - 1}`, { shallow: true })}>Prev</button>
+
+                <button className='px-2 py-1 mx-1 border' onClick={() => router.push(`/?page=${page + 1}`, `/?page=${page + 1}`, { shallow: true })}>Next</button>
 
                 <table className="w-full mt-10">
                     <thead>
