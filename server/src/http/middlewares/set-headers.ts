@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 
 const setHeaders: RequestHandler = (req, res, next) => {
-    res.set('X-Powered-By', 'Whatsapp Automation')
+    res.set('X-Powered-By', 'F1 Telemetry')
     res.append('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGINS || '*')
     res.append('Access-Control-Allow-Credentials', 'true')
     res.append('Access-Control-Allow-Methods', ['GET', 'POST', 'PUT', 'DELETE'])
